@@ -1,0 +1,4 @@
+1. GET  http://localhost:8082/actuator/health
+2. POST http://localhost:8082/customers
+3. GET  http://localhost:8082/customers
+4. GET  http://localhost:8082/customers/{id}
