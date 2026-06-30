@@ -1,0 +1,21 @@
+Product Service URLs
+
+Health:
+GET http://localhost:8083/actuator/health
+
+Create Product:
+POST http://localhost:8083/products
+
+Request Body:
+{
+  "sku": "IPHONE-15-BLACK-128",
+  "name": "iPhone 15",
+  "description": "Apple iPhone 15 128GB Black",
+  "price": 799.99
+}
+
+Get All Products:
+GET http://localhost:8083/products
+
+Get Product By Id:
+GET http://localhost:8083/products/{id}
