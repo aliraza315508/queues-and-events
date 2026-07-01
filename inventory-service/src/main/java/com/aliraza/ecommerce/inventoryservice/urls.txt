@@ -1,0 +1,8 @@
+POST   /inventory
+GET    /inventory
+GET    /inventory/{id}
+GET    /inventory/product/{productId}
+PATCH  /inventory/product/{productId}/add-stock
+PATCH  /inventory/product/{productId}/reserve
+PATCH  /inventory/product/{productId}/release
+PATCH  /inventory/product/{productId}/confirm

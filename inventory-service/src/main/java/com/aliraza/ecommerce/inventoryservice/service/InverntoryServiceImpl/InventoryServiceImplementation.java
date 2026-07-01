@@ -3,10 +3,13 @@ package com.aliraza.ecommerce.inventoryservice.service.InverntoryServiceImpl;
 import com.aliraza.ecommerce.inventoryservice.dto.InventoryRequest;
 import com.aliraza.ecommerce.inventoryservice.dto.InventoryResponse;
 import com.aliraza.ecommerce.inventoryservice.dto.UpdateStockRequest;
+import com.aliraza.ecommerce.inventoryservice.mapper.InventoryMapper;
 import com.aliraza.ecommerce.inventoryservice.model.Inventory;
 import com.aliraza.ecommerce.inventoryservice.repository.InventoryRepository;
 import com.aliraza.ecommerce.inventoryservice.service.InventoryService;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -14,7 +17,7 @@ import java.util.UUID;
 
 
 @Service
-@Transactional
+@org.springframework.transaction.annotation.Transactional
 public class InventoryServiceImplementation implements InventoryService {
 
     private final InventoryRepository inventoryRepository;

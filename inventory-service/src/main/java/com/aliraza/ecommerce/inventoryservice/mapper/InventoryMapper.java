@@ -1,6 +1,6 @@
 package com.aliraza.ecommerce.inventoryservice.mapper;
 
-import com.aliraza.ecommerce.inventoryservice.dto.CreateInventoryRequest;
+import com.aliraza.ecommerce.inventoryservice.dto.InventoryRequest;
 import com.aliraza.ecommerce.inventoryservice.dto.InventoryResponse;
 import com.aliraza.ecommerce.inventoryservice.model.Inventory;
 import org.springframework.stereotype.Component;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class InventoryMapper {
 
-    public Inventory toEntity(CreateInventoryRequest request) {
+    public Inventory toEntity(InventoryRequest request) {
         return new Inventory(
                 request.productId(),
                 request.availableQuantity()
