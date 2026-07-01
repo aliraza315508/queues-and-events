@@ -26,16 +26,28 @@ public class CustomerController {
         this.customerService = customerService;
     }
 
+
+
+
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CustomerResponse createCustomer(@Valid @RequestBody CreateCustomerRequest request) {
         return customerService.createCustomer(request);
     }
 
+
+
+
+
     @GetMapping("/{id}")
     public CustomerResponse getCustomerById(@PathVariable UUID id) {
         return customerService.getCustomerById(id);
     }
+
+
+
+
 
     @GetMapping
     public List<CustomerResponse> getAllCustomers() {

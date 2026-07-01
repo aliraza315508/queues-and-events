@@ -3,6 +3,7 @@ package com.aliraza.ecommerce.orderservice.service.impl;
 
 import com.aliraza.ecommerce.orderservice.dto.CreateOrderRequest;
 import com.aliraza.ecommerce.orderservice.dto.OrderResponse;
+import com.aliraza.ecommerce.orderservice.mapper.OrderMapper;
 import com.aliraza.ecommerce.orderservice.model.Order;
 import com.aliraza.ecommerce.orderservice.model.OrderStatus;
 import com.aliraza.ecommerce.orderservice.repository.OrderRepository;
@@ -22,10 +23,16 @@ import java.util.UUID;
 public class OrderServiceImplementation implements OrderService {
 
     private final OrderRepository orderRepository;
+    private final OrderMapper orderMapper;
 
-    public OrderServiceImplementation(OrderRepository orderRepository) {
+    public OrderServiceImplementation(OrderRepository orderRepository, OrderMapper orderMapper) {
         this.orderRepository = orderRepository;
+        this.orderMapper = orderMapper;
     }
+
+
+
+
 
     @Override
     @Transactional
@@ -44,47 +51,46 @@ public class OrderServiceImplementation implements OrderService {
 
         Order savedOrder = orderRepository.save(order);
 
-        return mapToResponse(savedOrder);
+        return orderMapper.toResponse(savedOrder);
+
     }
+
+
+
+
 
     @Override
     public OrderResponse getOrderById(UUID id) {
+
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "Order not found"
                 ));
 
-        return mapToResponse(order);
+        return orderMapper.toResponse(order);
+
     }
+
+
+
+
 
     @Override
     public List<OrderResponse> getOrdersByCustomerId(String customerId) {
-        return orderRepository.findByCustomerIdOrderByCreatedAtDesc(customerId)
-                .stream()
-                .map(this::mapToResponse)
-                .toList();
+        return orderMapper.toResponseList(
+                orderRepository.findByCustomerIdOrderByCreatedAtDesc(customerId)
+        );
     }
+
+
+
+
 
     @Override
     public List<OrderResponse> getAllOrders() {
-        return orderRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"))
-                .stream()
-                .map(this::mapToResponse)
-                .toList();
-    }
-
-    private OrderResponse mapToResponse(Order order) {
-        return new OrderResponse(
-                order.getId(),
-                order.getCustomerId(),
-                order.getProductId(),
-                order.getQuantity(),
-                order.getUnitPrice(),
-                order.getTotalAmount(),
-                order.getStatus(),
-                order.getCreatedAt(),
-                order.getUpdatedAt()
+        return orderMapper.toResponseList(
+                orderRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"))
         );
     }
 }

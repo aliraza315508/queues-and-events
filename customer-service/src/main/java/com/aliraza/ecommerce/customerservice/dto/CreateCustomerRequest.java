@@ -1,5 +1,6 @@
 package com.aliraza.ecommerce.customerservice.dto;
 
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -17,5 +18,6 @@ public record CreateCustomerRequest(
 
         @Size(max = 30, message = "phone must be at most 30 characters")
         String phone
+
 ) {
 }

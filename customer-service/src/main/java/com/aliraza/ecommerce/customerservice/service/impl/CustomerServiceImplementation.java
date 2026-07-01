@@ -1,10 +1,8 @@
 package com.aliraza.ecommerce.customerservice.service.impl;
 
-import com.aliraza.ecommerce.customerservice.service.CustomerService;
-
-
 import com.aliraza.ecommerce.customerservice.dto.CreateCustomerRequest;
 import com.aliraza.ecommerce.customerservice.dto.CustomerResponse;
+import com.aliraza.ecommerce.customerservice.mapper.CustomerMapper;
 import com.aliraza.ecommerce.customerservice.model.Customer;
 import com.aliraza.ecommerce.customerservice.repository.CustomerRepository;
 import com.aliraza.ecommerce.customerservice.service.CustomerService;
@@ -19,10 +17,16 @@ import java.util.UUID;
 public class CustomerServiceImplementation implements CustomerService {
 
     private final CustomerRepository customerRepository;
+    private final CustomerMapper customerMapper;
 
-    public CustomerServiceImplementation(CustomerRepository customerRepository) {
+    public CustomerServiceImplementation(CustomerRepository customerRepository, CustomerMapper customerMapper) {
         this.customerRepository = customerRepository;
+        this.customerMapper = customerMapper;
     }
+
+
+
+
 
     @Override
     public CustomerResponse createCustomer(CreateCustomerRequest request) {
@@ -38,33 +42,30 @@ public class CustomerServiceImplementation implements CustomerService {
 
         Customer savedCustomer = customerRepository.save(customer);
 
-        return toResponse(savedCustomer);
+        return customerMapper.toResponse(savedCustomer);
+
     }
+
+
+
+
 
     @Override
     public CustomerResponse getCustomerById(UUID id) {
+
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
 
-        return toResponse(customer);
+        return customerMapper.toResponse(customer);
+
     }
+
+
+
+
 
     @Override
     public List<CustomerResponse> getAllCustomers() {
-        return customerRepository.findAll()
-                .stream()
-                .map(this::toResponse)
-                .toList();
-    }
-
-    private CustomerResponse toResponse(Customer customer) {
-        return new CustomerResponse(
-                customer.getId(),
-                customer.getFullName(),
-                customer.getEmail(),
-                customer.getPhone(),
-                customer.getCreatedAt(),
-                customer.getUpdatedAt()
-        );
+        return customerMapper.toResponseList(customerRepository.findAll());
     }
 }

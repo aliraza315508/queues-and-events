@@ -1,7 +1,6 @@
 package com.aliraza.ecommerce.productservice.dto;
 
 
-
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
@@ -27,5 +26,6 @@ public record ProductRequest(
         @DecimalMin(value = "0.01", message = "price must be greater than 0")
         @Digits(integer = 17, fraction = 2, message = "price must have max 2 decimal places")
         BigDecimal price
+
 ) {
 }

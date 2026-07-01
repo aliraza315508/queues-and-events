@@ -3,6 +3,7 @@ package com.aliraza.ecommerce.productservice.service.impl;
 
 import com.aliraza.ecommerce.productservice.dto.ProductRequest;
 import com.aliraza.ecommerce.productservice.dto.ProductResponse;
+import com.aliraza.ecommerce.productservice.mapper.ProductMapper;
 import com.aliraza.ecommerce.productservice.model.Product;
 import com.aliraza.ecommerce.productservice.repository.ProductRepository;
 import com.aliraza.ecommerce.productservice.service.ProductService;
@@ -17,10 +18,16 @@ import java.util.UUID;
 public class ProductServiceImplementation implements ProductService {
 
     private final ProductRepository productRepository;
+    private final ProductMapper productMapper;
 
-    public ProductServiceImplementation(ProductRepository productRepository) {
+    public ProductServiceImplementation(ProductRepository productRepository, ProductMapper productMapper) {
         this.productRepository = productRepository;
+        this.productMapper = productMapper;
     }
+
+
+
+
 
     @Override
     public ProductResponse createProduct(ProductRequest request) {
@@ -40,38 +47,33 @@ public class ProductServiceImplementation implements ProductService {
 
         Product savedProduct = productRepository.save(product);
 
-        return mapToResponse(savedProduct);
+        return productMapper.toResponse(savedProduct);
+
     }
+
+
+
+
 
     @Override
     public ProductResponse getProductById(UUID id) {
+
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "Product not found"
                 ));
 
-        return mapToResponse(product);
+        return productMapper.toResponse(product);
+
     }
+
+
+
+
 
     @Override
     public List<ProductResponse> getAllProducts() {
-        return productRepository.findAll()
-                .stream()
-                .map(this::mapToResponse)
-                .toList();
-    }
-
-    private ProductResponse mapToResponse(Product product) {
-        return new ProductResponse(
-                product.getId(),
-                product.getSku(),
-                product.getName(),
-                product.getDescription(),
-                product.getPrice(),
-                product.getActive(),
-                product.getCreatedAt(),
-                product.getUpdatedAt()
-        );
+        return productMapper.toResponseList(productRepository.findAll());
     }
 }
