@@ -1,4 +1,4 @@
-package com.aliraza.ecommerce.inventoryservice.service.InverntoryServiceImpl;
+package com.aliraza.ecommerce.inventoryservice.service.impl;
 
 import com.aliraza.ecommerce.inventoryservice.dto.InventoryRequest;
 import com.aliraza.ecommerce.inventoryservice.dto.InventoryResponse;
@@ -23,7 +23,10 @@ public class InventoryServiceImplementation implements InventoryService {
     private final InventoryRepository inventoryRepository;
     private final InventoryMapper inventoryMapper;
 
-    public InventoryServiceImplementation(InventoryRepository inventoryRepository) {
+    public InventoryServiceImplementation(
+            InventoryRepository inventoryRepository ,
+            InventoryMapper inventoryMapper
+    ) {
         this.inventoryRepository = inventoryRepository;
         this.inventoryMapper = inventoryMapper;
     }

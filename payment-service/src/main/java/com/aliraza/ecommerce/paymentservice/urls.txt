@@ -1,0 +1,10 @@
+1. GET    /actuator/health
+2. POST   /payments                         create order-1
+3. GET    /payments
+4. GET    /payments/order/order-1
+5. GET    /payments/customer/customer-1
+6. GET    /payments/{id}
+7. PATCH  /payments/order/order-1/complete
+8. PATCH  /payments/order/order-1/refund
+9. POST   /payments                         create order-2
+10. PATCH /payments/order/order-2/fail
