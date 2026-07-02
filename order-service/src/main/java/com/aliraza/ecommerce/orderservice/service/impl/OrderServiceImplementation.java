@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -55,14 +56,14 @@ public class OrderServiceImplementation implements OrderService {
         Order savedOrder = orderRepository.save(order);
 
         OrderCreatedEvent event = new OrderCreatedEvent(
+                UUID.randomUUID() ,
                 savedOrder.getId(),
                 savedOrder.getCustomerId(),
                 savedOrder.getProductId(),
                 savedOrder.getQuantity(),
                 savedOrder.getUnitPrice(),
                 savedOrder.getTotalAmount(),
-                savedOrder.getStatus(),
-                savedOrder.getCreatedAt()
+                Instant.now()
         );
 
         orderEventProducer.publishOrderCreated(event);
