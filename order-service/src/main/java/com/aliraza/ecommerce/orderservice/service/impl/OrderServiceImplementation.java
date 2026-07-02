@@ -1,11 +1,12 @@
 package com.aliraza.ecommerce.orderservice.service.impl;
 
-
 import com.aliraza.ecommerce.orderservice.dto.CreateOrderRequest;
 import com.aliraza.ecommerce.orderservice.dto.OrderResponse;
+import com.aliraza.ecommerce.orderservice.event.OrderCreatedEvent;
 import com.aliraza.ecommerce.orderservice.mapper.OrderMapper;
 import com.aliraza.ecommerce.orderservice.model.Order;
 import com.aliraza.ecommerce.orderservice.model.OrderStatus;
+import com.aliraza.ecommerce.orderservice.producer.OrderEventProducer;
 import com.aliraza.ecommerce.orderservice.repository.OrderRepository;
 import com.aliraza.ecommerce.orderservice.service.OrderService;
 import org.springframework.data.domain.Sort;
@@ -24,15 +25,17 @@ public class OrderServiceImplementation implements OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
+    private final OrderEventProducer orderEventProducer;
 
-    public OrderServiceImplementation(OrderRepository orderRepository, OrderMapper orderMapper) {
+    public OrderServiceImplementation(
+            OrderRepository orderRepository,
+            OrderMapper orderMapper,
+            OrderEventProducer orderEventProducer
+    ) {
         this.orderRepository = orderRepository;
         this.orderMapper = orderMapper;
+        this.orderEventProducer = orderEventProducer;
     }
-
-
-
-
 
     @Override
     @Transactional
@@ -51,17 +54,24 @@ public class OrderServiceImplementation implements OrderService {
 
         Order savedOrder = orderRepository.save(order);
 
+        OrderCreatedEvent event = new OrderCreatedEvent(
+                savedOrder.getId(),
+                savedOrder.getCustomerId(),
+                savedOrder.getProductId(),
+                savedOrder.getQuantity(),
+                savedOrder.getUnitPrice(),
+                savedOrder.getTotalAmount(),
+                savedOrder.getStatus(),
+                savedOrder.getCreatedAt()
+        );
+
+        orderEventProducer.publishOrderCreated(event);
+
         return orderMapper.toResponse(savedOrder);
-
     }
-
-
-
-
 
     @Override
     public OrderResponse getOrderById(UUID id) {
-
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
@@ -69,12 +79,7 @@ public class OrderServiceImplementation implements OrderService {
                 ));
 
         return orderMapper.toResponse(order);
-
     }
-
-
-
-
 
     @Override
     public List<OrderResponse> getOrdersByCustomerId(String customerId) {
@@ -82,10 +87,6 @@ public class OrderServiceImplementation implements OrderService {
                 orderRepository.findByCustomerIdOrderByCreatedAtDesc(customerId)
         );
     }
-
-
-
-
 
     @Override
     public List<OrderResponse> getAllOrders() {
