@@ -54,7 +54,9 @@ public class OrderCreatedConsumer {
                     event.customerId(),
                     event.productId(),
                     event.quantity(),
-                    Instant.now()
+                    Instant.now() ,
+                    event.totalAmount()
+
             );
 
             inventoryEventProducer.publishInventoryReserved(reservedEvent);

@@ -5,6 +5,7 @@ import com.aliraza.ecommerce.paymentservice.dto.PaymentRequest;
 import com.aliraza.ecommerce.paymentservice.dto.PaymentResponse;
 import com.aliraza.ecommerce.paymentservice.mapper.PaymentMapper;
 import com.aliraza.ecommerce.paymentservice.model.Payment;
+import com.aliraza.ecommerce.paymentservice.model.PaymentStatus;
 import com.aliraza.ecommerce.paymentservice.repository.PaymentRepository;
 import com.aliraza.ecommerce.paymentservice.service.PaymentService;
 import org.springframework.stereotype.Service;
@@ -112,5 +113,29 @@ public class PaymentServiceImplementation implements PaymentService {
     private Payment getPaymentEntityByOrderId(String orderId) {
         return paymentRepository.findByOrderId(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Payment not found with orderId: " + orderId));
+    }
+
+
+    @Override
+    public PaymentResponse createAndCompletePayment(PaymentRequest request) {
+        Payment payment = paymentRepository.findByOrderId(request.orderId())
+                .orElseGet(() -> paymentRepository.save(new Payment(
+                        request.orderId(),
+                        request.customerId(),
+                        request.amount(),
+                        request.paymentMethod()
+                )));
+
+        if (payment.getStatus() == PaymentStatus.COMPLETED) {
+            return paymentMapper.toResponse(payment);
+        }
+
+        if (payment.getStatus() != PaymentStatus.PENDING) {
+            throw new IllegalStateException("Payment is not pending for orderId: " + request.orderId());
+        }
+
+        payment.complete();
+
+        return paymentMapper.toResponse(payment);
     }
 }

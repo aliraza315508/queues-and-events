@@ -1,4 +1,4 @@
-package com.aliraza.ecommerce.inventoryservice.event;
+package com.aliraza.ecommerce.paymentservice.event;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -10,7 +10,7 @@ public record InventoryReservedEvent(
         String customerId,
         String productId,
         Integer quantity,
-        Instant occurredAt ,
-        BigDecimal totalAmount
+        BigDecimal totalAmount,
+        Instant occurredAt
 ) {
 }
