@@ -1,8 +1,6 @@
 package com.aliraza.ecommerce.notificationservice.consumer;
 
-import com.aliraza.ecommerce.notificationservice.dto.NotificationRequest;
 import com.aliraza.ecommerce.notificationservice.event.OrderCancelledEvent;
-import com.aliraza.ecommerce.notificationservice.model.NotificationType;
 import com.aliraza.ecommerce.notificationservice.service.NotificationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -40,19 +38,6 @@ public class OrderCancelledConsumer {
                 event.reason()
         );
 
-        notificationService.createNotification(
-                new NotificationRequest(
-                        event.orderId().toString(),
-                        event.customerId(),
-                        buildTemporaryRecipientEmail(event.customerId()),
-                        NotificationType.ORDER_CANCELLED,
-                        "Order Cancelled",
-                        "Your order " + event.orderId() + " has been cancelled. Reason: " + event.reason()
-                )
-        );
-    }
-
-    private String buildTemporaryRecipientEmail(String customerId) {
-        return "customer-" + customerId + "@example.com";
+        notificationService.createOrderCancelledNotification(event);
     }
 }

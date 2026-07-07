@@ -1,8 +1,6 @@
 package com.aliraza.ecommerce.notificationservice.consumer;
 
-import com.aliraza.ecommerce.notificationservice.dto.NotificationRequest;
 import com.aliraza.ecommerce.notificationservice.event.OrderConfirmedEvent;
-import com.aliraza.ecommerce.notificationservice.model.NotificationType;
 import com.aliraza.ecommerce.notificationservice.service.NotificationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -39,19 +37,6 @@ public class OrderConfirmedConsumer {
                 event.customerId()
         );
 
-        notificationService.createNotification(
-                new NotificationRequest(
-                        event.orderId().toString(),
-                        event.customerId(),
-                        buildTemporaryRecipientEmail(event.customerId()),
-                        NotificationType.ORDER_CONFIRMED,
-                        "Order Confirmed",
-                        "Your order " + event.orderId() + " has been confirmed."
-                )
-        );
-    }
-
-    private String buildTemporaryRecipientEmail(String customerId) {
-        return "customer-" + customerId + "@example.com";
+        notificationService.createOrderConfirmedNotification(event);
     }
 }
