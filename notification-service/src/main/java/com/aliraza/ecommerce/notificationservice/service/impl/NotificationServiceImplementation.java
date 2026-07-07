@@ -5,14 +5,18 @@ import com.aliraza.ecommerce.notificationservice.dto.NotificationResponse;
 import com.aliraza.ecommerce.notificationservice.event.OrderCancelledEvent;
 import com.aliraza.ecommerce.notificationservice.event.OrderConfirmedEvent;
 import com.aliraza.ecommerce.notificationservice.mapper.NotificationMapper;
+import com.aliraza.ecommerce.notificationservice.message.NotificationMessage;
 import com.aliraza.ecommerce.notificationservice.model.Notification;
 import com.aliraza.ecommerce.notificationservice.model.NotificationStatus;
 import com.aliraza.ecommerce.notificationservice.model.NotificationType;
+import com.aliraza.ecommerce.notificationservice.publisher.NotificationMessagePublisher;
 import com.aliraza.ecommerce.notificationservice.repository.NotificationRepository;
 import com.aliraza.ecommerce.notificationservice.service.NotificationService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,13 +26,16 @@ public class NotificationServiceImplementation implements NotificationService {
 
     private final NotificationRepository notificationRepository;
     private final NotificationMapper notificationMapper;
+    private final NotificationMessagePublisher notificationMessagePublisher;
 
     public NotificationServiceImplementation(
             NotificationRepository notificationRepository,
-            NotificationMapper notificationMapper
+            NotificationMapper notificationMapper,
+            NotificationMessagePublisher notificationMessagePublisher
     ) {
         this.notificationRepository = notificationRepository;
         this.notificationMapper = notificationMapper;
+        this.notificationMessagePublisher = notificationMessagePublisher;
     }
 
     @Override
@@ -55,7 +62,7 @@ public class NotificationServiceImplementation implements NotificationService {
 
         Notification savedNotification = notificationRepository.save(notification);
 
-        return notificationMapper.toResponse(savedNotification);
+        return queueAndPublishNotification(savedNotification, event.orderId());
     }
 
     @Override
@@ -72,7 +79,7 @@ public class NotificationServiceImplementation implements NotificationService {
 
         Notification savedNotification = notificationRepository.save(notification);
 
-        return notificationMapper.toResponse(savedNotification);
+        return queueAndPublishNotification(savedNotification, event.orderId());
     }
 
     @Override
@@ -162,6 +169,41 @@ public class NotificationServiceImplementation implements NotificationService {
         Notification savedNotification = notificationRepository.save(notification);
 
         return notificationMapper.toResponse(savedNotification);
+    }
+
+    private NotificationResponse queueAndPublishNotification(Notification notification, UUID orderId) {
+        notification.markQueued();
+
+        Notification queuedNotification = notificationRepository.save(notification);
+
+        NotificationMessage notificationMessage = new NotificationMessage(
+                queuedNotification.getId(),
+                orderId,
+                queuedNotification.getCustomerId(),
+                queuedNotification.getRecipientEmail(),
+                queuedNotification.getNotificationType().name(),
+                queuedNotification.getSubject(),
+                queuedNotification.getMessage()
+        );
+
+        publishAfterTransactionCommit(notificationMessage);
+
+        return notificationMapper.toResponse(queuedNotification);
+    }
+
+    private void publishAfterTransactionCommit(NotificationMessage notificationMessage) {
+        if (TransactionSynchronizationManager.isSynchronizationActive()) {
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                @Override
+                public void afterCommit() {
+                    notificationMessagePublisher.publish(notificationMessage);
+                }
+            });
+
+            return;
+        }
+
+        notificationMessagePublisher.publish(notificationMessage);
     }
 
     private Notification getNotificationEntityById(UUID id) {
