@@ -2,6 +2,8 @@ package com.aliraza.ecommerce.notificationservice.service;
 
 import com.aliraza.ecommerce.notificationservice.dto.NotificationRequest;
 import com.aliraza.ecommerce.notificationservice.dto.NotificationResponse;
+import com.aliraza.ecommerce.notificationservice.event.OrderCancelledEvent;
+import com.aliraza.ecommerce.notificationservice.event.OrderConfirmedEvent;
 import com.aliraza.ecommerce.notificationservice.model.NotificationStatus;
 import com.aliraza.ecommerce.notificationservice.model.NotificationType;
 
@@ -11,6 +13,10 @@ import java.util.UUID;
 public interface NotificationService {
 
     NotificationResponse createNotification(NotificationRequest request);
+
+    NotificationResponse createOrderConfirmedNotification(OrderConfirmedEvent event);
+
+    NotificationResponse createOrderCancelledNotification(OrderCancelledEvent event);
 
     NotificationResponse getNotificationById(UUID id);
 

@@ -2,6 +2,8 @@ package com.aliraza.ecommerce.notificationservice.service.impl;
 
 import com.aliraza.ecommerce.notificationservice.dto.NotificationRequest;
 import com.aliraza.ecommerce.notificationservice.dto.NotificationResponse;
+import com.aliraza.ecommerce.notificationservice.event.OrderCancelledEvent;
+import com.aliraza.ecommerce.notificationservice.event.OrderConfirmedEvent;
 import com.aliraza.ecommerce.notificationservice.mapper.NotificationMapper;
 import com.aliraza.ecommerce.notificationservice.model.Notification;
 import com.aliraza.ecommerce.notificationservice.model.NotificationStatus;
@@ -33,6 +35,40 @@ public class NotificationServiceImplementation implements NotificationService {
     @Transactional
     public NotificationResponse createNotification(NotificationRequest request) {
         Notification notification = notificationMapper.toEntity(request);
+
+        Notification savedNotification = notificationRepository.save(notification);
+
+        return notificationMapper.toResponse(savedNotification);
+    }
+
+    @Override
+    @Transactional
+    public NotificationResponse createOrderConfirmedNotification(OrderConfirmedEvent event) {
+        Notification notification = new Notification(
+                event.orderId().toString(),
+                event.customerId(),
+                resolveRecipientEmail(event.customerId()),
+                NotificationType.ORDER_CONFIRMED,
+                "Order Confirmed",
+                "Your order " + event.orderId() + " has been confirmed."
+        );
+
+        Notification savedNotification = notificationRepository.save(notification);
+
+        return notificationMapper.toResponse(savedNotification);
+    }
+
+    @Override
+    @Transactional
+    public NotificationResponse createOrderCancelledNotification(OrderCancelledEvent event) {
+        Notification notification = new Notification(
+                event.orderId().toString(),
+                event.customerId(),
+                resolveRecipientEmail(event.customerId()),
+                NotificationType.ORDER_CANCELLED,
+                "Order Cancelled",
+                "Your order " + event.orderId() + " has been cancelled. Reason: " + event.reason()
+        );
 
         Notification savedNotification = notificationRepository.save(notification);
 
@@ -131,5 +167,9 @@ public class NotificationServiceImplementation implements NotificationService {
     private Notification getNotificationEntityById(UUID id) {
         return notificationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Notification not found with id: " + id));
+    }
+
+    private String resolveRecipientEmail(String customerId) {
+        return customerId + "@customer.local";
     }
 }
