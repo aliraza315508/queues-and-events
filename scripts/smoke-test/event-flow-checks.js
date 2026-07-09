@@ -55,8 +55,7 @@ async function runEventFlowChecks() {
     await waitFor(
         async () => {
             const notifications = await get(
-                `${config.services.notificationService}/notifications/order/${order.id}`
-            );
+`${config.services.notificationService}/api/notifications/order/${order.id}`            );
 
             if (!Array.isArray(notifications) || notifications.length === 0) {
                 throw new Error("Notification was not created");
@@ -75,3 +74,7 @@ async function runEventFlowChecks() {
 module.exports = {
     runEventFlowChecks
 };
+
+
+
+//testing

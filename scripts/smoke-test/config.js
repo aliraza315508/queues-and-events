@@ -1,12 +1,12 @@
 const config = {
-    services: {
-        customerService: "http://localhost:8080",
-        orderService: "http://localhost:8081",
-        productService: "http://localhost:8082",
-        inventoryService: "http://localhost:8083",
-        paymentService: "http://localhost:8084",
-        notificationService: "http://localhost:8085"
-    },
+ services: {
+     orderService: "http://localhost:8081",
+     customerService: "http://localhost:8082",
+     productService: "http://localhost:8083",
+     inventoryService: "http://localhost:8084",
+     paymentService: "http://localhost:8085",
+     notificationService: "http://localhost:8086"
+ },
 
     rabbitmq: {
         managementUrl: "http://localhost:15672",
