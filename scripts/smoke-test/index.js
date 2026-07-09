@@ -10,20 +10,22 @@ async function main() {
     try {
         await waitForAllServices();
 
+        console.log("Starting event flow checks...");
         await runEventFlowChecks();
 
+        console.log("Starting RabbitMQ checks...");
         await runRabbitMqChecks();
 
         console.log("====================================");
-        console.log("Smoke tests passed successfully");
+        console.log("CI smoke tests passed");
         console.log("====================================");
 
         process.exit(0);
     } catch (error) {
         console.error("====================================");
-        console.error("Smoke tests failed");
+        console.error("CI smoke tests failed");
         console.error("====================================");
-        console.error(error.message || error);
+        console.error(error.stack || error.message || error);
 
         process.exit(1);
     }

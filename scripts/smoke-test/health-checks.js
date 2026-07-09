@@ -5,33 +5,32 @@ const { waitFor } = require("./wait");
 async function waitForAllServices() {
     console.log("Checking service health...");
 
-    const services = config.services;
+    for (const service of config.healthCheckServices) {
+        await waitForService(service.name, service.baseUrl);
+    }
+
+    console.log("All service health checks passed");
+}
+
+async function waitForService(serviceName, baseUrl) {
+    console.log(`Checking ${serviceName} at ${baseUrl}/actuator/health`);
 
     await waitFor(
         async () => {
-            await checkServiceHealth("customer-service", services.customerService);
-            await checkServiceHealth("order-service", services.orderService);
-            await checkServiceHealth("product-service", services.productService);
-            await checkServiceHealth("inventory-service", services.inventoryService);
-            await checkServiceHealth("payment-service", services.paymentService);
-            await checkServiceHealth("notification-service", services.notificationService);
+            const health = await get(`${baseUrl}/actuator/health`);
+
+            if (health.status !== "UP") {
+                throw new Error(`${serviceName} health status is ${health.status}`);
+            }
         },
         {
             timeoutMs: config.timeout.serviceStartupMs,
             retryDelayMs: config.timeout.retryDelayMs,
-            description: "all Spring Boot services"
+            description: `${serviceName} health`
         }
     );
-}
 
-async function checkServiceHealth(serviceName, baseUrl) {
-    const health = await get(`${baseUrl}/actuator/health`);
-
-    if (health.status !== "UP") {
-        throw new Error(`${serviceName} is not UP`);
-    }
-
-    console.log(`${serviceName} is UP`);
+    console.log(`${serviceName} health passed`);
 }
 
 module.exports = {
