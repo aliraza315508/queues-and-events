@@ -1,0 +1,12 @@
+name: Generate CI Docker Compose
+description: Generate docker-compose.ci.yml for project-1-c local Docker Compose CI
+
+inputs:
+  output_file:
+    description: Generated Docker Compose CI file path
+    required: false
+    default: docker-compose.ci.yml
+
+runs:
+  using: node20
+  main: index.js

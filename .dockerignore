@@ -1,0 +1,17 @@
+.git
+.github
+.idea
+.vscode
+
+**/target/classes
+**/target/generated-sources
+**/target/generated-test-sources
+**/target/maven-status
+**/target/surefire-reports
+**/target/test-classes
+
+**/*.log
+**/.env
+**/.DS_Store
+
+README.md

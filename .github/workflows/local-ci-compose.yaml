@@ -1,0 +1,93 @@
+name: Local Compose CI
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: local-compose-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  local-compose-ci:
+    name: Maven Build + Docker Compose Smoke Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    env:
+      JAVA_VERSION: "17"
+      COMPOSE_FILE: docker-compose.ci.yml
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: maven
+
+      - name: Show Java and Maven versions
+        run: |
+          java -version
+          mvn -version
+
+      - name: Run Maven tests
+        run: mvn clean test
+
+      - name: Package all services
+        run: mvn package -DskipTests
+
+      - name: Verify service JAR files exist
+        run: |
+          test -f order-service/target/*.jar
+          test -f customer-service/target/*.jar
+          test -f product-service/target/*.jar
+          test -f inventory-service/target/*.jar
+          test -f payment-service/target/*.jar
+          test -f notification-service/target/*.jar
+
+      - name: Generate CI Docker Compose file
+        uses: ./.github/actions/generate-ci-compose
+        with:
+          output_file: ${{ env.COMPOSE_FILE }}
+
+      - name: Show generated Docker Compose file
+        run: cat ${{ env.COMPOSE_FILE }}
+
+      - name: Validate generated Docker Compose file
+        run: docker compose -f ${{ env.COMPOSE_FILE }} config
+
+      - name: Build and start full system
+        run: docker compose -f ${{ env.COMPOSE_FILE }} up -d --build
+
+      - name: Show running containers
+        run: docker compose -f ${{ env.COMPOSE_FILE }} ps
+
+      - name: Setup Node.js for smoke test
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Run JavaScript smoke test
+        run: node scripts/smoke-test.js
+
+      - name: Show Docker Compose logs on failure
+        if: failure()
+        run: docker compose -f ${{ env.COMPOSE_FILE }} logs --no-color
+
+      - name: Shutdown Docker Compose
+        if: always()
+        run: docker compose -f ${{ env.COMPOSE_FILE }} down -v --remove-orphans
