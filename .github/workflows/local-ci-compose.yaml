@@ -82,7 +82,7 @@ jobs:
           node-version: "20"
 
       - name: Run JavaScript smoke test
-        run: node scripts/smoke-test.js
+        run: node scripts/smoke-test/index.js
 
       - name: Show Docker Compose logs on failure
         if: failure()
