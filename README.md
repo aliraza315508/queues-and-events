@@ -168,3 +168,90 @@ scripts/smoke-test
 * RabbitMQ notification queue implemented in notification-service
 * Docker Compose infrastructure available locally
 * GitHub Actions CI pipeline added for build, compose startup, and smoke testing
+
+
+## Architecture Diagram
+
+```mermaid
+flowchart TD
+    Client["Client / Smoke Test / Postman"]
+
+    subgraph RestSetup["REST Setup Endpoints"]
+        CustomerAPI["customer-service :8082<br/>POST /customers"]
+        ProductAPI["product-service :8083<br/>POST /products"]
+        InventoryAPI["inventory-service :8084<br/>POST /inventory"]
+        OrderAPI["order-service :8081<br/>POST /orders"]
+    end
+
+    subgraph Databases["Database Per Service"]
+        CustomerDB[("customer_db")]
+        ProductDB[("product_db")]
+        InventoryDB[("inventory_db")]
+        OrderDB[("order_db")]
+        PaymentDB[("payment_db")]
+        NotificationDB[("notification_db")]
+    end
+
+    subgraph Kafka["Apache Kafka Event Bus"]
+        OrderCreated["topic: order.created"]
+        InventoryReserved["topic: inventory.reserved"]
+        InventoryRejected["topic: inventory.rejected"]
+        PaymentCompleted["topic: payment.completed"]
+        PaymentFailed["topic: payment.failed"]
+        OrderConfirmed["topic: order.confirmed"]
+        OrderCancelled["topic: order.cancelled"]
+    end
+
+    subgraph RabbitMQ["RabbitMQ Notification Queue"]
+        NotificationExchange["exchange: notification.exchange"]
+        NotificationQueue["queue: notification.queue"]
+        NotificationWorker["NotificationWorker"]
+    end
+
+    Client --> CustomerAPI
+    Client --> ProductAPI
+    Client --> InventoryAPI
+    Client --> OrderAPI
+
+    CustomerAPI --> CustomerDB
+    ProductAPI --> ProductDB
+    InventoryAPI --> InventoryDB
+
+    OrderAPI --> OrderDB
+    OrderAPI -->|"publishes OrderCreatedEvent"| OrderCreated
+
+    OrderCreated -->|"consumed by inventory-service"| InventoryAPI
+    InventoryAPI -->|"reserve stock"| InventoryDB
+
+    InventoryAPI -->|"stock available"| InventoryReserved
+    InventoryAPI -->|"stock unavailable"| InventoryRejected
+
+    InventoryReserved -->|"consumed by payment-service"| PaymentService["payment-service :8085"]
+    PaymentService -->|"create and complete payment"| PaymentDB
+    PaymentService -->|"payment success"| PaymentCompleted
+    PaymentService -->|"payment failure"| PaymentFailed
+
+    InventoryRejected -->|"consumed by order-service"| OrderCancelFromInventory["order-service cancels order"]
+    PaymentFailed -->|"consumed by order-service"| OrderCancelFromPayment["order-service cancels order"]
+    PaymentCompleted -->|"consumed by order-service"| OrderConfirm["order-service confirms order"]
+
+    OrderConfirm --> OrderDB
+    OrderConfirm -->|"publishes OrderConfirmedEvent"| OrderConfirmed
+
+    OrderCancelFromInventory --> OrderDB
+    OrderCancelFromInventory -->|"publishes OrderCancelledEvent"| OrderCancelled
+
+    OrderCancelFromPayment --> OrderDB
+    OrderCancelFromPayment -->|"publishes OrderCancelledEvent"| OrderCancelled
+
+    OrderConfirmed -->|"consumed by notification-service"| NotificationService["notification-service :8086"]
+    OrderCancelled -->|"consumed by notification-service"| NotificationService
+
+    NotificationService -->|"create notification row"| NotificationDB
+    NotificationService -->|"status: QUEUED"| NotificationDB
+    NotificationService -->|"publish NotificationMessage"| NotificationExchange
+    NotificationExchange -->|"routing key: notification.send"| NotificationQueue
+    NotificationQueue --> NotificationWorker
+    NotificationWorker -->|"logs simulated send"| NotificationWorker
+    NotificationWorker -->|"status: SENT or FAILED"| NotificationDB
+```
