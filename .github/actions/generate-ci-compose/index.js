@@ -26,21 +26,21 @@ const services = [
   { name: "notification-service", port: 8086, kafka: true, rabbitmq: true }
 ];
 
-/**
- * Your root compose.yaml currently uses apache/kafka:4.1.2.
- * But the KAFKA_CFG_* environment values you gave are Bitnami Kafka style,
- * so this CI compose generator uses bitnami/kafka:3.7.
- */
 const kafkaEnvironment = {
-  KAFKA_CFG_NODE_ID: "0",
-  KAFKA_CFG_PROCESS_ROLES: "controller,broker",
-  KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: "0@kafka:9093",
-  KAFKA_CFG_LISTENERS: "PLAINTEXT://:9092,CONTROLLER://:9093",
-  KAFKA_CFG_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092",
-  KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT",
-  KAFKA_CFG_CONTROLLER_LISTENER_NAMES: "CONTROLLER",
-  KAFKA_CFG_INTER_BROKER_LISTENER_NAME: "PLAINTEXT",
-  ALLOW_PLAINTEXT_LISTENER: "yes"
+  KAFKA_NODE_ID: "1",
+  KAFKA_PROCESS_ROLES: "broker,controller",
+  KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka:29093",
+  KAFKA_LISTENERS: "PLAINTEXT://:9092,CONTROLLER://:29093",
+  KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092",
+  KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT",
+  KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER",
+  KAFKA_INTER_BROKER_LISTENER_NAME: "PLAINTEXT",
+  CLUSTER_ID: "4L6g3nShT-eMCtK--X86sw",
+  KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1",
+  KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "1",
+  KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: "1",
+  KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: "0",
+  KAFKA_LOG_DIRS: "/tmp/kraft-combined-logs"
 };
 
 function servicePrefix(serviceName) {
@@ -88,12 +88,13 @@ function postgresBlock(service) {
 
 function kafkaBlock() {
   return `  kafka:
-    image: bitnami/kafka:3.7
+    image: apache/kafka:3.7.0
     container_name: kafka-ci
+    hostname: kafka
     environment:
 ${envLines(kafkaEnvironment)}
     healthcheck:
-      test: ["CMD-SHELL", "kafka-topics.sh --bootstrap-server localhost:9092 --list >/dev/null 2>&1"]
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list >/dev/null 2>&1"]
       interval: 10s
       timeout: 10s
       retries: 15
