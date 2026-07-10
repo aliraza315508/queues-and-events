@@ -141,25 +141,9 @@ The GitHub Actions workflow at `.github/workflows/local-ci-compose.yaml`:
 4. Runs JavaScript health and event-flow smoke tests.
 5. Prints logs on failure and removes containers.
 
-## Project Structure
+## Architecture Diagram
 
-```text
-.
-├── customer-service
-├── product-service
-├── order-service
-├── inventory-service
-├── payment-service
-├── notification-service
-├── scripts/smoke-test
-├── .github/actions/generate-ci-compose
-├── .github/workflows/local-ci-compose.yaml
-├── compose.yaml
-├── Dockerfile
-└── pom.xml
-```
-
-
+```mermaid
 flowchart TD
     Client["Client / Postman / Smoke Tests"]
 
@@ -172,7 +156,7 @@ flowchart TD
         NotificationService["notification-service :8086"]
     end
 
-    subgraph Databases["PostgreSQL — Database Per Service"]
+    subgraph Databases["PostgreSQL - Database Per Service"]
         CustomerDB[("customer_db")]
         ProductDB[("product_db")]
         OrderDB[("order_db")]
@@ -213,9 +197,9 @@ flowchart TD
     PaymentService -->|"Payment successful"| PaymentCompleted
     PaymentService -->|"Payment unsuccessful"| PaymentFailed
 
-    InventoryRejected -->|"Consume and cancel order"| OrderService
-    PaymentFailed -->|"Consume and cancel order"| OrderService
-    PaymentCompleted -->|"Consume and confirm order"| OrderService
+    InventoryRejected -->|"Cancel order"| OrderService
+    PaymentFailed -->|"Cancel order"| OrderService
+    PaymentCompleted -->|"Confirm order"| OrderService
 
     OrderService -->|"Publish"| OrderConfirmed
     OrderService -->|"Publish"| OrderCancelled
@@ -223,8 +207,8 @@ flowchart TD
     OrderConfirmed -->|"Consume"| NotificationService
     OrderCancelled -->|"Consume"| NotificationService
 
-    NotificationService -->|"Get customer email and phone"| CustomerService
-    NotificationService -->|"Save status: QUEUED"| NotificationDB
+    NotificationService -->|"Get customer contact details"| CustomerService
+    NotificationService -->|"Save QUEUED notification"| NotificationDB
 
     subgraph RabbitMQ["RabbitMQ Notification Pipeline"]
         Exchange["notification.exchange"]
@@ -233,7 +217,7 @@ flowchart TD
     end
 
     NotificationService -->|"Publish NotificationMessage"| Exchange
-    Exchange -->|"Routing key: notification.send"| Queue
+    Exchange -->|"notification.send"| Queue
     Queue -->|"Consume"| Worker
 
     subgraph Delivery["Notification Delivery"]
@@ -249,5 +233,5 @@ flowchart TD
     EmailSender -->|"Email enabled"| SMTP
     SmsSender -->|"SMS enabled"| Twilio
 
-    Worker -->|"Success: SENT"| NotificationDB
-    Worker -->|"Failure: FAILED"| NotificationDB
+    Worker -->|"SENT or FAILED"| NotificationDB
+```
