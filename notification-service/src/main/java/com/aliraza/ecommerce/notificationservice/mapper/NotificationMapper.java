@@ -14,6 +14,7 @@ public class NotificationMapper {
                 request.orderId(),
                 request.customerId(),
                 request.recipientEmail(),
+                request.recipientPhone(),
                 request.notificationType(),
                 request.subject(),
                 request.message()
@@ -26,6 +27,7 @@ public class NotificationMapper {
                 notification.getOrderId(),
                 notification.getCustomerId(),
                 notification.getRecipientEmail(),
+                notification.getRecipientPhone(),
                 notification.getNotificationType(),
                 notification.getSubject(),
                 notification.getMessage(),

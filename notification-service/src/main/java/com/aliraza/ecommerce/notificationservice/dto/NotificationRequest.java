@@ -25,6 +25,9 @@ public record NotificationRequest(
         @NotNull(message = "Notification type is required")
         NotificationType notificationType,
 
+        @Size(max = 30, message = "Recipient phone must be 30 characters or less")
+        String recipientPhone,
+
         @NotBlank(message = "Subject is required")
         @Size(max = 200, message = "Subject must be 200 characters or less")
         String subject,

@@ -17,6 +17,8 @@ public record NotificationResponse(
 
         String recipientEmail,
 
+        String recipientPhone,
+
         NotificationType notificationType,
 
         String subject,

@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
+import com.aliraza.ecommerce.notificationservice.client.CustomerClient;
+import com.aliraza.ecommerce.notificationservice.client.CustomerResponse;
 
 import java.util.List;
 import java.util.UUID;
@@ -27,15 +29,19 @@ public class NotificationServiceImplementation implements NotificationService {
     private final NotificationRepository notificationRepository;
     private final NotificationMapper notificationMapper;
     private final NotificationMessagePublisher notificationMessagePublisher;
+    private final CustomerClient customerClient;
+
 
     public NotificationServiceImplementation(
             NotificationRepository notificationRepository,
             NotificationMapper notificationMapper,
-            NotificationMessagePublisher notificationMessagePublisher
+            NotificationMessagePublisher notificationMessagePublisher,
+            CustomerClient customerClient
     ) {
         this.notificationRepository = notificationRepository;
         this.notificationMapper = notificationMapper;
         this.notificationMessagePublisher = notificationMessagePublisher;
+        this.customerClient = customerClient;
     }
 
     @Override
@@ -51,10 +57,13 @@ public class NotificationServiceImplementation implements NotificationService {
     @Override
     @Transactional
     public NotificationResponse createOrderConfirmedNotification(OrderConfirmedEvent event) {
+        CustomerResponse customer = customerClient.getCustomerById(event.customerId());
+
         Notification notification = new Notification(
                 event.orderId().toString(),
                 event.customerId(),
-                resolveRecipientEmail(event.customerId()),
+                customer.email(),
+                customer.phone(),
                 NotificationType.ORDER_CONFIRMED,
                 "Order Confirmed",
                 "Your order " + event.orderId() + " has been confirmed."
@@ -65,13 +74,17 @@ public class NotificationServiceImplementation implements NotificationService {
         return queueAndPublishNotification(savedNotification, event.orderId());
     }
 
+
     @Override
     @Transactional
     public NotificationResponse createOrderCancelledNotification(OrderCancelledEvent event) {
+        CustomerResponse customer = customerClient.getCustomerById(event.customerId());
+
         Notification notification = new Notification(
                 event.orderId().toString(),
                 event.customerId(),
-                resolveRecipientEmail(event.customerId()),
+                customer.email(),
+                customer.phone(),
                 NotificationType.ORDER_CANCELLED,
                 "Order Cancelled",
                 "Your order " + event.orderId() + " has been cancelled. Reason: " + event.reason()
@@ -81,6 +94,7 @@ public class NotificationServiceImplementation implements NotificationService {
 
         return queueAndPublishNotification(savedNotification, event.orderId());
     }
+
 
     @Override
     @Transactional(readOnly = true)
@@ -181,6 +195,7 @@ public class NotificationServiceImplementation implements NotificationService {
                 orderId,
                 queuedNotification.getCustomerId(),
                 queuedNotification.getRecipientEmail(),
+                queuedNotification.getRecipientPhone(),
                 queuedNotification.getNotificationType().name(),
                 queuedNotification.getSubject(),
                 queuedNotification.getMessage()
@@ -211,7 +226,4 @@ public class NotificationServiceImplementation implements NotificationService {
                 .orElseThrow(() -> new EntityNotFoundException("Notification not found with id: " + id));
     }
 
-    private String resolveRecipientEmail(String customerId) {
-        return customerId + "@customer.local";
-    }
 }

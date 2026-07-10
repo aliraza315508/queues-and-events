@@ -57,6 +57,7 @@ public class Notification {
             String orderId,
             String customerId,
             String recipientEmail,
+            String recipientPhone,
             NotificationType notificationType,
             String subject,
             String message
@@ -64,6 +65,7 @@ public class Notification {
         this.orderId = orderId;
         this.customerId = customerId;
         this.recipientEmail = recipientEmail;
+        this.recipientPhone = recipientPhone;
         this.notificationType = notificationType;
         this.subject = subject;
         this.message = message;
@@ -114,6 +116,12 @@ public class Notification {
 
         status = NotificationStatus.FAILED;
     }
+
+    public String getRecipientPhone() {
+        return recipientPhone;
+    }
+
+
 
     public UUID getId() {
         return id;
