@@ -158,3 +158,96 @@ The GitHub Actions workflow at `.github/workflows/local-ci-compose.yaml`:
 ├── Dockerfile
 └── pom.xml
 ```
+
+
+flowchart TD
+    Client["Client / Postman / Smoke Tests"]
+
+    subgraph Services["Spring Boot Microservices"]
+        CustomerService["customer-service :8082"]
+        ProductService["product-service :8083"]
+        OrderService["order-service :8081"]
+        InventoryService["inventory-service :8084"]
+        PaymentService["payment-service :8085"]
+        NotificationService["notification-service :8086"]
+    end
+
+    subgraph Databases["PostgreSQL — Database Per Service"]
+        CustomerDB[("customer_db")]
+        ProductDB[("product_db")]
+        OrderDB[("order_db")]
+        InventoryDB[("inventory_db")]
+        PaymentDB[("payment_db")]
+        NotificationDB[("notification_db")]
+    end
+
+    Client --> CustomerService
+    Client --> ProductService
+    Client --> InventoryService
+    Client --> OrderService
+
+    CustomerService --> CustomerDB
+    ProductService --> ProductDB
+    OrderService --> OrderDB
+    InventoryService --> InventoryDB
+    PaymentService --> PaymentDB
+    NotificationService --> NotificationDB
+
+    subgraph Kafka["Apache Kafka Event Pipeline"]
+        OrderCreated["order.created"]
+        InventoryReserved["inventory.reserved"]
+        InventoryRejected["inventory.rejected"]
+        PaymentCompleted["payment.completed"]
+        PaymentFailed["payment.failed"]
+        OrderConfirmed["order.confirmed"]
+        OrderCancelled["order.cancelled"]
+    end
+
+    OrderService -->|"Publish"| OrderCreated
+    OrderCreated -->|"Consume"| InventoryService
+
+    InventoryService -->|"Stock available"| InventoryReserved
+    InventoryService -->|"Stock unavailable"| InventoryRejected
+
+    InventoryReserved -->|"Consume"| PaymentService
+    PaymentService -->|"Payment successful"| PaymentCompleted
+    PaymentService -->|"Payment unsuccessful"| PaymentFailed
+
+    InventoryRejected -->|"Consume and cancel order"| OrderService
+    PaymentFailed -->|"Consume and cancel order"| OrderService
+    PaymentCompleted -->|"Consume and confirm order"| OrderService
+
+    OrderService -->|"Publish"| OrderConfirmed
+    OrderService -->|"Publish"| OrderCancelled
+
+    OrderConfirmed -->|"Consume"| NotificationService
+    OrderCancelled -->|"Consume"| NotificationService
+
+    NotificationService -->|"Get customer email and phone"| CustomerService
+    NotificationService -->|"Save status: QUEUED"| NotificationDB
+
+    subgraph RabbitMQ["RabbitMQ Notification Pipeline"]
+        Exchange["notification.exchange"]
+        Queue["notification.queue"]
+        Worker["NotificationWorker"]
+    end
+
+    NotificationService -->|"Publish NotificationMessage"| Exchange
+    Exchange -->|"Routing key: notification.send"| Queue
+    Queue -->|"Consume"| Worker
+
+    subgraph Delivery["Notification Delivery"]
+        EmailSender["EmailNotificationSender"]
+        SmsSender["SmsNotificationSender"]
+        SMTP["SMTP Email Server"]
+        Twilio["Twilio SMS API"]
+    end
+
+    Worker --> EmailSender
+    Worker --> SmsSender
+
+    EmailSender -->|"Email enabled"| SMTP
+    SmsSender -->|"SMS enabled"| Twilio
+
+    Worker -->|"Success: SENT"| NotificationDB
+    Worker -->|"Failure: FAILED"| NotificationDB
