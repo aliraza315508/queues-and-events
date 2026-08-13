@@ -1,6 +1,8 @@
 package com.aliraza.ecommerce.inventoryservice.model;
 
-
+import com.aliraza.ecommerce.inventoryservice.exception.InsufficientStockException;
+import com.aliraza.ecommerce.inventoryservice.exception.InvalidInventoryQuantityException;
+import com.aliraza.ecommerce.inventoryservice.exception.InvalidReservedStockException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -69,20 +71,23 @@ public class Inventory {
     }
 
     public boolean hasEnoughStock(Integer quantity) {
-        return quantity != null && quantity > 0 && availableQuantity >= quantity;
+        return quantity != null
+                && quantity > 0
+                && availableQuantity >= quantity;
     }
 
     public void addStock(Integer quantity) {
-        if (quantity == null || quantity <= 0) {
-            throw new IllegalArgumentException("quantity must be greater than 0");
-        }
-
+        validateQuantity(quantity);
         availableQuantity += quantity;
     }
 
     public void reserveStock(Integer quantity) {
-        if (!hasEnoughStock(quantity)) {
-            throw new IllegalArgumentException("Not enough stock available");
+        validateQuantity(quantity);
+
+        if (availableQuantity < quantity) {
+            throw new InsufficientStockException(
+                    "Not enough stock available"
+            );
         }
 
         availableQuantity -= quantity;
@@ -90,12 +95,12 @@ public class Inventory {
     }
 
     public void releaseReservedStock(Integer quantity) {
-        if (quantity == null || quantity <= 0) {
-            throw new IllegalArgumentException("quantity must be greater than 0");
-        }
+        validateQuantity(quantity);
 
         if (reservedQuantity < quantity) {
-            throw new IllegalArgumentException("Not enough reserved stock to release");
+            throw new InvalidReservedStockException(
+                    "Not enough reserved stock to release"
+            );
         }
 
         reservedQuantity -= quantity;
@@ -103,15 +108,23 @@ public class Inventory {
     }
 
     public void confirmReservedStock(Integer quantity) {
-        if (quantity == null || quantity <= 0) {
-            throw new IllegalArgumentException("quantity must be greater than 0");
-        }
+        validateQuantity(quantity);
 
         if (reservedQuantity < quantity) {
-            throw new IllegalArgumentException("Not enough reserved stock to confirm");
+            throw new InvalidReservedStockException(
+                    "Not enough reserved stock to confirm"
+            );
         }
 
         reservedQuantity -= quantity;
+    }
+
+    private void validateQuantity(Integer quantity) {
+        if (quantity == null || quantity <= 0) {
+            throw new InvalidInventoryQuantityException(
+                    "Quantity must be greater than 0"
+            );
+        }
     }
 
     public UUID getId() {
@@ -138,3 +151,4 @@ public class Inventory {
         return updatedAt;
     }
 }
+

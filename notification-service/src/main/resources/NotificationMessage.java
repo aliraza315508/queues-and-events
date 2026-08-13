@@ -1,6 +1,5 @@
 package com.aliraza.ecommerce.notificationservice.message;
 
-
 import java.util.UUID;
 
 public record NotificationMessage(

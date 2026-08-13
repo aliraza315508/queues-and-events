@@ -4,6 +4,7 @@ import com.aliraza.ecommerce.inventoryservice.dto.UpdateStockRequest;
 import com.aliraza.ecommerce.inventoryservice.event.InventoryRejectedEvent;
 import com.aliraza.ecommerce.inventoryservice.event.InventoryReservedEvent;
 import com.aliraza.ecommerce.inventoryservice.event.OrderCreatedEvent;
+import com.aliraza.ecommerce.inventoryservice.exception.InventoryBusinessException;
 import com.aliraza.ecommerce.inventoryservice.producer.InventoryEventProducer;
 import com.aliraza.ecommerce.inventoryservice.service.InventoryService;
 import org.slf4j.Logger;
@@ -17,7 +18,8 @@ import java.util.UUID;
 @Service
 public class OrderCreatedConsumer {
 
-    private static final Logger log = LoggerFactory.getLogger(OrderCreatedConsumer.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(OrderCreatedConsumer.class);
 
     private final InventoryService inventoryService;
     private final InventoryEventProducer inventoryEventProducer;
@@ -48,31 +50,39 @@ public class OrderCreatedConsumer {
                     new UpdateStockRequest(event.quantity())
             );
 
-            InventoryReservedEvent reservedEvent = new InventoryReservedEvent(
-                    UUID.randomUUID(),
-                    event.orderId(),
-                    event.customerId(),
-                    event.productId(),
-                    event.quantity(),
-                    Instant.now() ,
-                    event.totalAmount()
-
-            );
+            InventoryReservedEvent reservedEvent =
+                    new InventoryReservedEvent(
+                            UUID.randomUUID(),
+                            event.orderId(),
+                            event.customerId(),
+                            event.productId(),
+                            event.quantity(),
+                            Instant.now(),
+                            event.totalAmount()
+                    );
 
             inventoryEventProducer.publishInventoryReserved(reservedEvent);
 
-        } catch (Exception exception) {
+            log.info(
+                    "Inventory reserved for orderId={} productId={} quantity={}",
+                    event.orderId(),
+                    event.productId(),
+                    event.quantity()
+            );
+
+        } catch (InventoryBusinessException exception) {
             String reason = exception.getMessage();
 
-            InventoryRejectedEvent rejectedEvent = new InventoryRejectedEvent(
-                    UUID.randomUUID(),
-                    event.orderId(),
-                    event.customerId(),
-                    event.productId(),
-                    event.quantity(),
-                    reason,
-                    Instant.now()
-            );
+            InventoryRejectedEvent rejectedEvent =
+                    new InventoryRejectedEvent(
+                            UUID.randomUUID(),
+                            event.orderId(),
+                            event.customerId(),
+                            event.productId(),
+                            event.quantity(),
+                            reason,
+                            Instant.now()
+                    );
 
             inventoryEventProducer.publishInventoryRejected(rejectedEvent);
 

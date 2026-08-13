@@ -64,6 +64,7 @@
         <dependency>
             <groupId>com.twilio.sdk</groupId>
             <artifactId>twilio</artifactId>
+            <version>12.1.1</version>
         </dependency>
 
         <!-- Kafka support for publishing and consuming domain events. -->

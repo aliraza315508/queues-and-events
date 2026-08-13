@@ -30,6 +30,9 @@ public class Notification {
     @Column(name = "recipient_email", nullable = false, length = 150)
     private String recipientEmail;
 
+    @Column(name = "recipient_phone", length = 30)
+    private String recipientPhone;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "notification_type", nullable = false, length = 50)
     private NotificationType notificationType;
