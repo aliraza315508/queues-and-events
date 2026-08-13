@@ -5,6 +5,7 @@ import com.aliraza.ecommerce.paymentservice.dto.PaymentResponse;
 import com.aliraza.ecommerce.paymentservice.event.InventoryReservedEvent;
 import com.aliraza.ecommerce.paymentservice.event.PaymentCompletedEvent;
 import com.aliraza.ecommerce.paymentservice.event.PaymentFailedEvent;
+import com.aliraza.ecommerce.paymentservice.exception.PaymentBusinessException;
 import com.aliraza.ecommerce.paymentservice.producer.PaymentEventProducer;
 import com.aliraza.ecommerce.paymentservice.service.PaymentService;
 import org.slf4j.Logger;
@@ -66,7 +67,7 @@ public class InventoryReservedConsumer {
 
             paymentEventProducer.publishPaymentCompleted(completedEvent);
 
-        } catch (Exception exception) {
+        } catch (PaymentBusinessException exception) {
             String reason = exception.getMessage();
 
             PaymentFailedEvent failedEvent = new PaymentFailedEvent(

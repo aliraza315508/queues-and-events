@@ -1,8 +1,8 @@
 package com.aliraza.ecommerce.paymentservice.service.impl;
 
-
 import com.aliraza.ecommerce.paymentservice.dto.PaymentRequest;
 import com.aliraza.ecommerce.paymentservice.dto.PaymentResponse;
+import com.aliraza.ecommerce.paymentservice.exception.InvalidPaymentStateException;
 import com.aliraza.ecommerce.paymentservice.mapper.PaymentMapper;
 import com.aliraza.ecommerce.paymentservice.model.Payment;
 import com.aliraza.ecommerce.paymentservice.model.PaymentStatus;
@@ -115,7 +115,6 @@ public class PaymentServiceImplementation implements PaymentService {
                 .orElseThrow(() -> new IllegalArgumentException("Payment not found with orderId: " + orderId));
     }
 
-
     @Override
     public PaymentResponse createAndCompletePayment(PaymentRequest request) {
         Payment payment = paymentRepository.findByOrderId(request.orderId())
@@ -131,7 +130,9 @@ public class PaymentServiceImplementation implements PaymentService {
         }
 
         if (payment.getStatus() != PaymentStatus.PENDING) {
-            throw new IllegalStateException("Payment is not pending for orderId: " + request.orderId());
+            throw new InvalidPaymentStateException(
+                    "Payment is not pending for orderId: " + request.orderId()
+            );
         }
 
         payment.complete();
