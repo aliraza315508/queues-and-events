@@ -28,4 +28,15 @@ public class KafkaTopicConfig {
                 .replicas(1)
                 .build();
     }
+
+    @Bean
+    public NewTopic paymentDltTopic(
+            @Value("${app.kafka.topics.payment-dlt}")
+            String topicName
+    ) {
+        return TopicBuilder.name(topicName)
+                .partitions(1)
+                .replicas(1)
+                .build();
+    }
 }

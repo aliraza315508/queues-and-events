@@ -45,6 +45,13 @@ public class KafkaTopicConfig {
     }
 
     @Bean
+    public NewTopic orderDltTopic(
+            @Value("${app.kafka.topics.order-dlt}") String topicName
+    ) {
+        return createTopic(topicName);
+    }
+
+    @Bean
     public NewTopic orderCancelledTopic(
             @Value("${app.kafka.topics.order-cancelled}") String topicName
     ) {
