@@ -47,14 +47,18 @@ public class NotificationWorker {
                     "Notification sent successfully. notificationId={}",
                     notificationMessage.notificationId()
             );
-        } catch (Exception exception) {
-            log.error(
-                    "Failed to send notification. notificationId={}",
-                    notificationMessage.notificationId(),
-                    exception
-            );
+         } catch (Exception exception) {
+        log.error(
+                "Failed to send notification. RabbitMQ will retry. notificationId={}",
+                notificationMessage.notificationId(),
+                exception
+        );
 
-            notificationService.markNotificationAsFailed(notificationMessage.notificationId());
-        }
+        throw new RuntimeException(
+                "Notification delivery failed for notificationId="
+                        + notificationMessage.notificationId(),
+                exception
+        );
+    }
     }
 }
