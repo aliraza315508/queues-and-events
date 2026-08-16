@@ -1,0 +1,51 @@
+ORDER SERVICE URLS
+==================
+
+Base URL:
+http://localhost:8081
+
+
+1. Health Check
+---------------
+
+GET http://localhost:8081/actuator/health
+
+
+2. Create Order
+---------------
+
+POST http://localhost:8081/orders
+
+Headers:
+Content-Type: application/json
+
+Body:
+{
+  "customerId": "customer-1",
+  "productId": "product-1",
+  "quantity": 2,
+  "unitPrice": 25.50
+}
+
+
+3. Get All Orders
+-----------------
+
+GET http://localhost:8081/orders
+
+
+4. Get Orders By Customer ID
+----------------------------
+
+GET http://localhost:8081/orders?customerId=customer-1
+
+
+5. Get Order By ID
+------------------
+
+GET http://localhost:8081/orders/{orderId}
+
+Example:
+GET http://localhost:8081/orders/PUT_ORDER_ID_HERE
+
+

@@ -1,13 +1,11 @@
 package com.aliraza.ecommerce.notificationservice.config;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,20 +25,37 @@ public class RabbitMQConfig {
     @Value("${app.rabbitmq.notification.routing-key}")
     private String notificationRoutingKey;
 
+
+    @Value("${app.rabbitmq.notification.dlq}")
+    private String notificationDlqName;
+
+    @Value("${app.rabbitmq.notification.dlq-exchange}")
+    private String notificationDlqExchangeName;
+
+    @Value("${app.rabbitmq.notification.dlq-routing-key}")
+    private String notificationDlqRoutingKey;
+
     @Bean
-    public Queue notificationQueue() {
-        return new Queue(notificationQueueName, true);
+    public Queue notificationQueue()
+    {
+        return QueueBuilder
+                .durable(notificationQueueName)
+                .deadLetterExchange(notificationDlqExchangeName)
+                .deadLetterRoutingKey(notificationDlqRoutingKey)
+                .build();
+
     }
 
     @Bean
-    public DirectExchange notificationExchange() {
+    public DirectExchange notificationExchange()
+    {
         return new DirectExchange(notificationExchangeName);
     }
 
     @Bean
     public Binding notificationBinding(
-            Queue notificationQueue,
-            DirectExchange notificationExchange
+         @Qualifier("notificationQueue") Queue notificationQueue,
+         @Qualifier("notificationExchange")   DirectExchange notificationExchange
     ) {
         return BindingBuilder
                 .bind(notificationQueue)
@@ -49,7 +64,32 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public MessageConverter jsonMessageConverter() {
+    Queue notificationDlq()
+    {
+        return QueueBuilder
+                .durable(notificationDlqName)
+                .build();
+    }
+
+    @Bean
+    DirectExchange notificationDlqExchange(){
+        return new DirectExchange(notificationDlqExchangeName);
+    }
+
+    @Bean
+    public Binding notificationDlqBinding(
+            @Qualifier("notificationDlq") Queue notificationDlq,
+            @Qualifier("notificationDlqExchange") DirectExchange notificationDlqExchange
+    ) {
+        return BindingBuilder
+                .bind(notificationDlq)
+                .to(notificationDlqExchange)
+                .with(notificationDlqRoutingKey);
+    }
+
+    @Bean
+    public MessageConverter jsonMessageConverter()
+    {
         return new Jackson2JsonMessageConverter();
     }
 
