@@ -122,6 +122,17 @@ function rabbitmqBlock() {
 `;
 }
 
+function mailpitBlock() {
+  return `  mailpit:
+    image: axllent/mailpit:latest
+    container_name: mailpit-ci
+    ports:
+      - "8025:8025"
+    networks:
+      - ${networkName}
+`;
+}
+
 function appBlock(service) {
   const prefix = servicePrefix(service.name);
   const upperPrefix = envPrefix(service.name);
@@ -151,6 +162,12 @@ function appBlock(service) {
     environment.RABBITMQ_PORT = "5672";
     environment.RABBITMQ_USERNAME = "guest";
     environment.RABBITMQ_PASSWORD = "guest";
+
+        environment.NOTIFICATION_EMAIL_ENABLED = "true";
+        environment.MAIL_HOST = "mailpit";
+        environment.MAIL_PORT = "1025";
+        environment.MAIL_SMTP_AUTH = "false";
+        environment.MAIL_SMTP_STARTTLS_ENABLE = "false";
   }
 
   const dependsOn = [
@@ -166,6 +183,9 @@ function appBlock(service) {
   if (service.rabbitmq) {
     dependsOn.push(`      rabbitmq:
         condition: service_healthy`);
+
+        dependsOn.push(`      mailpit:
+            condition: service_started`);
   }
 
   return `  ${service.name}:
@@ -195,6 +215,7 @@ function generateCompose() {
     ...services.map(postgresBlock),
     kafkaBlock(),
     rabbitmqBlock(),
+    mailpitBlock(),
     ...services.map(appBlock),
     `networks:
   ${networkName}:

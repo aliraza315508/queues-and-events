@@ -1,6 +1,6 @@
 const config = require("./config");
 const { get, post } = require("./http-client");
-const { waitFor, sleep } = require("./wait");
+const { waitFor } = require("./wait");
 const testData = require("./test-data");
 
 async function runEventFlowChecks() {
@@ -50,23 +50,37 @@ async function runEventFlowChecks() {
         }
     );
 
-    await sleep(5000);
 
-    await waitFor(
-        async () => {
-            const notifications = await get(
-`${config.services.notificationService}/api/notifications/order/${order.id}`            );
+ await waitFor(
+     async () => {
+         const notifications = await get(
+             `${config.services.notificationService}/api/notifications/order/${order.id}`
+         );
 
-            if (!Array.isArray(notifications) || notifications.length === 0) {
-                throw new Error("Notification was not created");
-            }
-        },
-        {
-            timeoutMs: 120000,
-            retryDelayMs: 5000,
-            description: "notification to be created"
-        }
-    );
+         if (!Array.isArray(notifications) || notifications.length === 0) {
+             throw new Error("Notification was not created");
+         }
+
+         const sentNotification = notifications.find(
+             notification => notification.status === "SENT"
+         );
+
+         if (!sentNotification) {
+             const statuses = notifications
+                 .map(notification => notification.status)
+                 .join(", ");
+
+             throw new Error(
+                 `Notification has not reached SENT status. Current statuses: ${statuses}`
+             );
+         }
+     },
+     {
+         timeoutMs: 120000,
+         retryDelayMs: 5000,
+         description: "notification to reach SENT status"
+     }
+ );
 
     console.log("Event flow checks passed");
 }
@@ -77,4 +91,3 @@ module.exports = {
 
 
 
-//testing
