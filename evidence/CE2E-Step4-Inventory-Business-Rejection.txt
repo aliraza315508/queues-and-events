@@ -1,0 +1,35 @@
+CE2E STEP 4 - KAFKA INVENTORY BUSINESS REJECTION
+
+Test Order ID:
+498e95b9-ca25-4344-979b-43f9e7ed5bb4
+
+Product ID:
+04cba06d-73f4-438f-ab07-2ecdb6bd9491
+
+BEFORE INVENTORY
+Available: 8
+Reserved:  2
+
+FINAL ORDER
+Order ID:     498e95b9-ca25-4344-979b-43f9e7ed5bb4
+Quantity:     20
+Total Amount: 500.00
+Status:       CANCELLED
+
+AFTER INVENTORY
+Available: 8
+Reserved:  2
+
+EXPECTED BUSINESS FLOW:
+order.created
+ -> insufficient inventory
+ -> inventory.rejected
+ -> order.cancelled
+ -> Order status CANCELLED
+
+
+INVENTORY.REJECTED EVENT:
+{"eventId":"bf0e5fc0-723d-44b5-83ec-aac53112557d","orderId":"498e95b9-ca25-4344-979b-43f9e7ed5bb4","customerId":"10aac227-c4e3-4614-bfd9-fb6d8c01b365","productId":"04cba06d-73f4-438f-ab07-2ecdb6bd9491","quantity":20,"reason":"Not enough stock available","occurredAt":1786896067.848182000}
+
+ORDER.CANCELLED EVENT:
+{"eventId":"6c598339-3149-4990-b546-77b966f01e20","orderId":"498e95b9-ca25-4344-979b-43f9e7ed5bb4","customerId":"10aac227-c4e3-4614-bfd9-fb6d8c01b365","reason":"Not enough stock available","occurredAt":1786896067.885336600}
