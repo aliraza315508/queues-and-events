@@ -65,10 +65,79 @@ order.confirmed / order.cancelled (Kafka)
     -> notification.queue
     -> RabbitMQ worker
     -> SMTP email + Twilio SMS
-    -> status updated to SENT or FAILED
+       -> success: status updated to SENT
+       -> failure: RabbitMQ retries
+       -> retries exhausted: status updated to FAILED
+          and message sent to notification.dlq
 ```
 
 Email and SMS delivery can be enabled independently. SMS is disabled by default.
+
+## Messaging Reliability
+
+### Kafka Retry and Dead Letter Topics
+
+Kafka consumers use Spring Kafka's `DefaultErrorHandler` with a fixed backoff strategy for technical processing failures.
+
+The retry configuration uses:
+
+```java
+new FixedBackOff(1000L, 2L)
+```
+
+This provides:
+
+* 1 initial processing attempt
+* 2 retry attempts
+* 1 second between attempts
+* 3 total processing attempts
+
+After retry exhaustion, the failed message is published to the appropriate Dead Letter Topic (DLT).
+
+| Service           | Dead Letter Topic |
+| ----------------- | ----------------- |
+| inventory-service | `inventory.dlt`   |
+| payment-service   | `payment.dlt`     |
+| order-service     | `order.dlt`       |
+
+Business failures are handled separately from technical failures.
+
+For example, insufficient inventory is an expected business condition. Instead of retrying the message as a technical failure, inventory-service publishes an `inventory.rejected` event so the order can follow the normal cancellation workflow.
+
+Technical failures such as database or infrastructure failures are allowed to propagate to the Kafka error handler so retry and DLT recovery can occur.
+
+### RabbitMQ Retry and Dead Letter Queue
+
+Notification delivery uses Spring RabbitMQ listener retries with exponential backoff.
+
+The retry policy is:
+
+* Maximum attempts: 3
+* Initial retry interval: 1000 ms
+* Backoff multiplier: 2.0
+* Maximum retry interval: 5000 ms
+
+The failure flow is:
+
+```text
+notification.queue
+    -> attempt 1
+    -> ~1 second
+    -> attempt 2
+    -> ~2 seconds
+    -> attempt 3
+    -> retries exhausted
+    -> notification marked FAILED
+    -> notification.exchange.dlq
+    -> routing key: notification.failed
+    -> notification.dlq
+```
+
+Delivery exceptions are rethrown by the notification worker so Spring RabbitMQ can perform the configured retries.
+
+A notification is not marked `FAILED` after the first unsuccessful delivery attempt. The final `FAILED` state is applied only after retry exhaustion.
+
+The dead-letter queue preserves failed notification messages for investigation or controlled replay instead of silently discarding them.
 
 ## Run Locally
 
@@ -185,6 +254,10 @@ flowchart TD
         PaymentFailed["payment.failed"]
         OrderConfirmed["order.confirmed"]
         OrderCancelled["order.cancelled"]
+
+        InventoryDLT["inventory.dlt"]
+        PaymentDLT["payment.dlt"]
+        OrderDLT["order.dlt"]
     end
 
     OrderService -->|"Publish"| OrderCreated
@@ -192,10 +265,12 @@ flowchart TD
 
     InventoryService -->|"Stock available"| InventoryReserved
     InventoryService -->|"Stock unavailable"| InventoryRejected
+    InventoryService -->|"Technical failure after retries"| InventoryDLT
 
     InventoryReserved -->|"Consume"| PaymentService
     PaymentService -->|"Payment successful"| PaymentCompleted
     PaymentService -->|"Payment unsuccessful"| PaymentFailed
+    PaymentService -->|"Technical failure after retries"| PaymentDLT
 
     InventoryRejected -->|"Cancel order"| OrderService
     PaymentFailed -->|"Cancel order"| OrderService
@@ -203,6 +278,7 @@ flowchart TD
 
     OrderService -->|"Publish"| OrderConfirmed
     OrderService -->|"Publish"| OrderCancelled
+    OrderService -->|"Technical failure after retries"| OrderDLT
 
     OrderConfirmed -->|"Consume"| NotificationService
     OrderCancelled -->|"Consume"| NotificationService
@@ -214,11 +290,17 @@ flowchart TD
         Exchange["notification.exchange"]
         Queue["notification.queue"]
         Worker["NotificationWorker"]
+        DLX["notification.exchange.dlq"]
+        DLQ["notification.dlq"]
     end
 
     NotificationService -->|"Publish NotificationMessage"| Exchange
     Exchange -->|"notification.send"| Queue
     Queue -->|"Consume"| Worker
+
+    Worker -->|"Delivery failure -> retry"| Queue
+    Queue -->|"Retries exhausted / notification.failed"| DLX
+    DLX -->|"notification.failed"| DLQ
 
     subgraph Delivery["Notification Delivery"]
         EmailSender["EmailNotificationSender"]
@@ -233,5 +315,6 @@ flowchart TD
     EmailSender -->|"Email enabled"| SMTP
     SmsSender -->|"SMS enabled"| Twilio
 
-    Worker -->|"SENT or FAILED"| NotificationDB
+    Worker -->|"Success -> SENT"| NotificationDB
+    Worker -->|"Retries exhausted -> FAILED"| NotificationDB
 ```
