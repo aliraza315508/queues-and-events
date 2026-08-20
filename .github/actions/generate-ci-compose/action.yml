@@ -8,5 +8,5 @@ inputs:
     default: docker-compose.ci.yml
 
 runs:
-  using: node20
+  using: node24
   main: index.js

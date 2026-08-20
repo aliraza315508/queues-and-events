@@ -168,6 +168,8 @@ function appBlock(service) {
         environment.MAIL_PORT = "1025";
         environment.MAIL_SMTP_AUTH = "false";
         environment.MAIL_SMTP_STARTTLS_ENABLE = "false";
+
+        environment.CUSTOMER_SERVICE_URL = "http://customer-service:8082";
   }
 
   const dependsOn = [
