@@ -16,22 +16,23 @@ async function runEventFlowChecks() {
         testData.product
     );
 
-    await post(
-        `${config.services.inventoryService}/inventory`,
-        {
-            productId: product.id,
-            quantity: testData.inventory.quantity
-        }
-    );
+await post(
+    `${config.services.inventoryService}/inventory`,
+    {
+        productId: product.id,
+        availableQuantity: testData.inventory.quantity
+    }
+);
 
-    const order = await post(
-        `${config.services.orderService}/orders`,
-        {
-            customerId: customer.id,
-            productId: product.id,
-            quantity: testData.order.quantity
-        }
-    );
+const order = await post(
+    `${config.services.orderService}/orders`,
+    {
+        customerId: customer.id,
+        productId: product.id,
+        quantity: testData.order.quantity,
+        unitPrice: product.price
+    }
+);
 
     await waitFor(
         async () => {
