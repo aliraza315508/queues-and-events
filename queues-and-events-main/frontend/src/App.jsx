@@ -1,4 +1,5 @@
 import ProductsPage from './pages/ProductsPage'
+import CustomersPage from './pages/CustomersPage'
 import './App.css'
 
 export default function App() {
@@ -8,6 +9,7 @@ export default function App() {
       <p>Welcome to my React and Spring Boot application.</p>
 
       <ProductsPage />
+      <CustomersPage />
     </main>
   )
 }
