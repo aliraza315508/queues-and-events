@@ -17,7 +17,10 @@ public record CreateCustomerRequest(
         String email,
 
         @Size(max = 30, message = "phone must be at most 30 characters")
-        String phone
+        String phone,
+
+        @Size(max = 500, message = "photoUrl must be at most 500 characters")
+        String photoUrl
 
 ) {
 }

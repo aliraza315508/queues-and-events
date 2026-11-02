@@ -14,6 +14,8 @@ public record CustomerResponse(
 
         String phone,
 
+        String photoUrl,
+
         Instant createdAt,
 
         Instant updatedAt

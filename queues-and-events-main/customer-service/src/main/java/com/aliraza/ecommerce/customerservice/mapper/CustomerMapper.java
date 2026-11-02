@@ -15,6 +15,7 @@ public class CustomerMapper {
                 customer.getFullName(),
                 customer.getEmail(),
                 customer.getPhone(),
+                customer.getPhotoUrl(),
                 customer.getCreatedAt(),
                 customer.getUpdatedAt()
         );

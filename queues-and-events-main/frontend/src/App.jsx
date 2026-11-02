@@ -11,18 +11,17 @@ export default function App() {
     <main className="app">
       <header className="app-header">
         <h1>E-Commerce Platform</h1>
-        <p>Browse data from all six Spring Boot services.</p>
         <nav className="app-nav" aria-label="Service sections">
           <a href="#product">Products</a>
-          <a href="#customer">Customers</a>
+          <a href="#customer">Accounts</a>
           <a href="#inventory">Inventory</a>
           <a href="#order">Orders</a>
           <a href="#payment">Payments</a>
           <a href="#notification">Notifications</a>
         </nav>
       </header>
-      <ProductsPage />
       <CustomersPage />
+      <ProductsPage />
       <InventoryPage />
       <OrdersPage />
       <PaymentsPage />

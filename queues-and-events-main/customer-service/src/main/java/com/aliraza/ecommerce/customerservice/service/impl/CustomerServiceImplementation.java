@@ -40,6 +40,9 @@ public class CustomerServiceImplementation implements CustomerService {
                 request.phone()
         );
 
+        customer.setPhotoUrl(request.photoUrl());
+
+
         Customer savedCustomer = customerRepository.save(customer);
 
         return customerMapper.toResponse(savedCustomer);

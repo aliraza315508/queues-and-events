@@ -28,6 +28,9 @@ public class Customer {
     @Column(name = "phone", length = 30)
     private String phone;
 
+    @Column(name = "photo_url", length = 500)
+    private String photoUrl;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
@@ -82,5 +85,14 @@ public class Customer {
 
     public Instant getUpdatedAt() {
         return updatedAt;
+    }
+
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 }
