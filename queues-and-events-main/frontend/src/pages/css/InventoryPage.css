@@ -1,0 +1,25 @@
+.inventory-page {
+  margin-top: 32px;
+  scroll-margin-top: 20px;
+}
+
+.inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 20px;
+}
+
+.inventory-card {
+  min-width: 0;
+  padding: 24px;
+  background: #fff;
+  border: 1px solid #dce2ea;
+  border-radius: 12px;
+}
+
+.inventory-card h3 { margin: 0 0 16px; overflow-wrap: anywhere; }
+.inventory-card dl { margin: 0; }
+.inventory-card dl > div { margin-top: 12px; }
+.inventory-card dt { font-weight: 600; color: #475569; }
+.inventory-card dd { margin: 4px 0 0; overflow-wrap: anywhere; white-space: pre-wrap; }
+.inventory-page [role="alert"] { color: #b91c1c; }

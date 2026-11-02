@@ -1,9 +1,17 @@
 export default function ProductCard({ product }) {
   return (
     <article className="product-card">
-      <h3>{product.name}</h3>
-      <p>{product.description}</p>
-      <p>Price: {product.price}</p>
+      <h3>{product.name ?? 'Product'}</h3>
+      <dl>
+        <div><dt>ID</dt><dd>{product.id ?? 'Not provided'}</dd></div>
+        <div><dt>Sku</dt><dd>{product.sku ?? 'Not provided'}</dd></div>
+        <div><dt>Name</dt><dd>{product.name ?? 'Not provided'}</dd></div>
+        <div><dt>Description</dt><dd>{product.description ?? 'Not provided'}</dd></div>
+        <div><dt>Price</dt><dd>{product.price ?? 'Not provided'}</dd></div>
+        <div><dt>Active</dt><dd>{product.active == null ? 'Not provided' : product.active ? 'Yes' : 'No'}</dd></div>
+        <div><dt>Created at</dt><dd>{product.createdAt ?? 'Not provided'}</dd></div>
+        <div><dt>Updated at</dt><dd>{product.updatedAt ?? 'Not provided'}</dd></div>
+      </dl>
     </article>
   )
 }

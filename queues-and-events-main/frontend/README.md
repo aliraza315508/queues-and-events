@@ -1,16 +1,33 @@
-# React + Vite
+# E-Commerce frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Read-only views for Products, Customers, Inventory, Orders, Payments, and Notifications.
+Each card displays every field in the corresponding backend response DTO.
 
-Currently, two official plugins are available:
+## Run
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+From this directory:
 
-## React Compiler
+```powershell
+npm ci
+npm run dev
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Open http://localhost:5173. Start the backend services and their required infrastructure separately. API ports: order 8081, customer 8082, product 8083, inventory 8084, payment 8085, notification 8086. A service that is offline shows an error in its section without blocking other sections.
 
-## Expanding the ESLint configuration
+## Structure
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- `src/api`: GET request functions, with optional abort signals.
+- `src/components`: one card per service, displaying all response fields.
+- `src/pages`: one stateful read-only page per service.
+- `src/pages/css`: six service-specific CSS files, including card styles.
+- `src/App.css`: shared application layout and navigation.
+- `src/index.css`: global defaults.
+
+Navigation links jump to the service sections on the same screen. Forms and mutations are intentionally left for the next stage. Vite proxy routes are development-only; production hosting needs equivalent API routing.
+
+## Verify
+
+```powershell
+npm run lint
+npm run build
+```

@@ -1,0 +1,25 @@
+.product-page {
+  margin-top: 32px;
+  scroll-margin-top: 20px;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 20px;
+}
+
+.product-card {
+  min-width: 0;
+  padding: 24px;
+  background: #fff;
+  border: 1px solid #dce2ea;
+  border-radius: 12px;
+}
+
+.product-card h3 { margin: 0 0 16px; overflow-wrap: anywhere; }
+.product-card dl { margin: 0; }
+.product-card dl > div { margin-top: 12px; }
+.product-card dt { font-weight: 600; color: #475569; }
+.product-card dd { margin: 4px 0 0; overflow-wrap: anywhere; white-space: pre-wrap; }
+.product-page [role="alert"] { color: #b91c1c; }

@@ -1,54 +1,40 @@
 import { useEffect, useState } from 'react'
 import { getProducts } from '../api/productApi'
 import ProductCard from '../components/ProductCard'
+import './css/ProductsPage.css'
 
 export default function ProductsPage() {
-  const [products, setProducts] = useState([])
+  const [items, setItems] = useState([])
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    let ignore = false
+    const controller = new AbortController()
 
-    async function loadProducts() {
+    async function loadItems() {
       try {
-        const data = await getProducts()
-
-        if (!ignore) {
-          setProducts(data)
-        }
+        const data = await getProducts(controller.signal)
+        if (!controller.signal.aborted) setItems(data)
       } catch (error) {
-        if (!ignore) {
-          setError(error.message)
-        }
+        if (!controller.signal.aborted) setError(error.message)
       } finally {
-        if (!ignore) {
-          setLoading(false)
-        }
+        if (!controller.signal.aborted) setLoading(false)
       }
     }
 
-    loadProducts()
-
-    return () => {
-      ignore = true
-    }
+    loadItems()
+    return () => controller.abort()
   }, [])
 
   return (
-    <section>
-      <h2>Products</h2>
-
-      {loading && <p>Loading products...</p>}
+    <section id="product" className="product-page" aria-labelledby="product-heading">
+      <h2 id="product-heading">Products</h2>
+      {loading && <p role="status">Loading products...</p>}
       {error && <p role="alert">{error}</p>}
-
-      {!loading && !error && products.length === 0 && (
-        <p>No products found.</p>
-      )}
-
-      {products.map((product) => (
-        <ProductCard key={product.id} product={product} />
-      ))}
+      {!loading && !error && items.length === 0 && <p>No products found.</p>}
+      <div className="product-grid">
+        {items.map((item) => <ProductCard key={item.id} product={item} />)}
+      </div>
     </section>
   )
 }

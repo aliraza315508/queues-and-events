@@ -1,0 +1,25 @@
+.order-page {
+  margin-top: 32px;
+  scroll-margin-top: 20px;
+}
+
+.order-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 20px;
+}
+
+.order-card {
+  min-width: 0;
+  padding: 24px;
+  background: #fff;
+  border: 1px solid #dce2ea;
+  border-radius: 12px;
+}
+
+.order-card h3 { margin: 0 0 16px; overflow-wrap: anywhere; }
+.order-card dl { margin: 0; }
+.order-card dl > div { margin-top: 12px; }
+.order-card dt { font-weight: 600; color: #475569; }
+.order-card dd { margin: 4px 0 0; overflow-wrap: anywhere; white-space: pre-wrap; }
+.order-page [role="alert"] { color: #b91c1c; }
