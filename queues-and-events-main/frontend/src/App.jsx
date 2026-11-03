@@ -8,7 +8,9 @@ import './App.css'
 import SummaryGrid from './components/Dashboard/SummaryGrid/SummaryGrid'
 import RecentOrders from './components/Dashboard/RecentOrders/RecentOrders'
 import LowStockItems from './components/Dashboard/LowStockItems/LowStockItems'
-
+import OrderOverview from './components/Dashboard/OrderOverview/OrderOverview'
+import QuickLinks from './components/Dashboard/QuickLinks/QuickLinks'
+import NotificationSummary from './components/Dashboard/NotificationSummary/NotificationSummary'
 
 export default function App() {
   return (
@@ -39,8 +41,16 @@ export default function App() {
        <SummaryGrid />
 
        <div className="dashboard-row">
-         <RecentOrders />
-         <LowStockItems />
+         <div className="dashboard-column">
+           <RecentOrders />
+           <OrderOverview />
+         </div>
+
+        <div className="dashboard-column">
+          <LowStockItems />
+          <QuickLinks />
+          <NotificationSummary />
+        </div>
        </div>
      </main>
     </div>
