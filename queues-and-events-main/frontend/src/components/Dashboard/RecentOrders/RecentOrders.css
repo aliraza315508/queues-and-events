@@ -1,0 +1,66 @@
+.orders-panel {
+  padding: var(--space-2xl);
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  min-width: 0;
+}
+
+.orders-panel h2 {
+  margin: 0 0 var(--space-sm);
+  font-family: var(--font-heading);
+  font-size: var(--text-section);
+  color: var(--color-heading);
+}
+
+.orders-panel > p {
+  margin: 0 0 var(--space-xl);
+  color: var(--color-text-muted);
+  font-size: var(--text-small);
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.orders-table th {
+  padding: var(--space-md);
+  background: var(--color-background);
+  color: var(--color-heading);
+  font-weight: 600;
+}
+
+.orders-table td {
+  padding: var(--space-lg) var(--space-md);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.status-badge {
+  display: inline-block;
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-small);
+  font-size: var(--text-small);
+  white-space: nowrap;
+}
+
+.status-success {
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
+}
+
+.status-warning {
+  background: var(--color-warning-bg);
+  color: var(--color-warning-text);
+}
+
+.status-danger {
+  background: var(--color-danger-bg);
+  color: var(--color-danger-text);
+}
