@@ -1,10 +1,11 @@
 import './NotificationSummary.css'
 
+// Sample values until notifications are loaded from the API.
 const notifications = [
-  { status: 'SENT', count: 18, style: 'success' },
-  { status: 'QUEUED', count: 2, style: 'neutral' },
-  { status: 'PENDING', count: 1, style: 'warning' },
-  { status: 'FAILED', count: 1, style: 'danger' },
+  { status: 'SENT', count: 18, style: 'sent' },
+  { status: 'QUEUED', count: 2, style: 'queued' },
+  { status: 'PENDING', count: 1, style: 'pending' },
+  { status: 'FAILED', count: 1, style: 'failed' },
 ]
 
 export default function NotificationSummary() {
@@ -16,7 +17,7 @@ export default function NotificationSummary() {
         {notifications.map((item) => (
           <article
             key={item.status}
-            className={`notification-stat notification-stat-${item.style}`}
+            className={`notification-stat notification-stat--${item.style}`}
           >
             <h3>{item.status}</h3>
             <p>{item.count}</p>

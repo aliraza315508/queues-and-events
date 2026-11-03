@@ -1,101 +1,111 @@
-/* Overall page layout */
+/* ========================================
+   1. APPLICATION LAYOUT
+   ======================================== */
+
+/* Place the sidebar beside the main content. */
 .admin-layout {
   display: flex;
   align-items: flex-start;
   min-height: 100vh;
-  font-family: var(--font-body);
-  color: var(--color-text);
+
+  /* Shared colors and font from theme.css. */
   background: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-body);
 }
 
-/* Left sidebar */
-.sidebar {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  overflow-y: auto;
 
-  width: var(--sidebar-width);
-  flex-shrink: 0;
-  padding: var(--space-3xl) var(--space-xl);
-  background: var(--color-sidebar);
-  color: var(--color-sidebar-text);
-}
+/* ========================================
+   2. MAIN CONTENT
+   ======================================== */
 
-.sidebar-brand {
-  margin-bottom: var(--space-4xl);
-}
-
-.sidebar-brand h2 {
-  margin: 0 0 var(--space-sm);
-  font-family: var(--font-heading);
-  font-size: var(--text-brand);
-}
-
-.sidebar-brand p {
-  margin: 0;
-  color: var(--color-sidebar-muted);
-}
-
-/* Sidebar navigation */
-.sidebar-nav {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-md);
-}
-
-.sidebar-nav a {
-  padding: var(--space-md) var(--space-lg);
-  border-radius: var(--radius-small);
-  color: var(--color-sidebar-text);
-  text-decoration: none;
-}
-
-.sidebar-nav a:hover,
-.sidebar-nav a:focus-visible {
-  background: var(--color-sidebar-hover);
-}
-
-/* Main dashboard area */
 .dashboard-content {
+  /* Fill the space remaining beside the sidebar. */
   flex: 1;
+
+  /* Allow content to shrink without widening the page. */
   min-width: 0;
-  padding: var(--space-3xl);
+
+  /* Vertical and horizontal page spacing. */
+  padding: var(--space-xl) var(--space-2xl);
 }
 
-/* Dashboard heading */
-.dashboard-header h1 {
-  margin: 0 0 var(--space-sm);
-  color: var(--color-heading);
-  font-family: var(--font-heading);
-  font-size: var(--text-title);
-}
 
-.dashboard-header p {
-  margin: 0;
-  color: var(--color-text-muted);
-}
+/* ========================================
+   3. DASHBOARD COLUMNS
+   ======================================== */
 
-/* Two dashboard columns */
+/*
+   Left column:
+   - Recent orders
+   - Order overview
+
+   Right column:
+   - Low stock items
+   - Quick links
+   - Notifications
+*/
 .dashboard-row {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-  gap: var(--space-xl);
-  margin-top: var(--space-2xl);
-  align-items: start;
+
+  /* Split available width in a 3:2 ratio, excluding the gap. */
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+
+  /* Space between columns and below the summary cards. */
+  gap: var(--space-lg);
+  margin-top: var(--space-lg);
+
+  /* Give both columns the same overall height. */
+  align-items: stretch;
 }
 
-/* Panels stacked inside each column */
+/* Stack the panels vertically inside each column. */
 .dashboard-column {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xl);
+  gap: var(--space-lg);
   min-width: 0;
 }
 
-/* Stack dashboard columns on smaller screens */
+/* Fill unused column space so the bottom panels align. */
+.dashboard-column > .order-overview,
+.dashboard-column > .notification-summary {
+  flex: 1;
+}
+
+
+/* ========================================
+   4. TABLET AND SMALL DESKTOP SCREENS
+   ======================================== */
+
 @media (max-width: 1100px) {
+  /* Display the columns one below the other. */
   .dashboard-row {
     grid-template-columns: 1fr;
+  }
+
+  /* Let stacked panels use their natural content height. */
+  .dashboard-column > .order-overview,
+  .dashboard-column > .notification-summary {
+    flex: initial;
+  }
+}
+
+
+/* ========================================
+   5. MOBILE SCREENS
+   ======================================== */
+
+@media (max-width: 700px) {
+  /* Place navigation above the main content.
+     Its appearance is controlled by Sidebar.css. */
+  .admin-layout {
+    flex-direction: column;
+  }
+
+  /* Use the full width with smaller page padding. */
+  .dashboard-content {
+    width: 100%;
+    padding: var(--space-lg);
   }
 }

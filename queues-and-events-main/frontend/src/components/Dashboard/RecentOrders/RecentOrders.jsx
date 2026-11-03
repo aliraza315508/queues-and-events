@@ -37,9 +37,9 @@ export default function RecentOrders() {
               <td>1</td>
               <td>$79.99</td>
               <td>
-                <span className="status-badge status-warning">
-                  CREATED
-                </span>
+               <span className="status-badge status-neutral">
+                 CREATED
+               </span>
               </td>
             </tr>
 

@@ -1,10 +1,32 @@
+import { productImages } from '../../../assets/productImages'
 import './LowStockItems.css'
+
+// Sample data until we connect this panel to the inventory API.
+const lowStockItems = [
+  {
+    name: 'Wireless Headphones',
+    image: productImages['ADMIN-DEMO-008'],
+    available: 3,
+    reserved: 2,
+  },
+  {
+    name: 'Canvas Backpack',
+    image: productImages['ADMIN-DEMO-010'],
+    available: 2,
+    reserved: 1,
+  },
+  {
+    name: 'Water Bottle',
+    image: null,
+    available: 5,
+    reserved: 0,
+  },
+]
 
 export default function LowStockItems() {
   return (
     <section className="low-stock-panel">
       <h2>Low stock items</h2>
-      <p>Products with 5 or fewer available units</p>
 
       <div className="stock-table-container">
         <table className="stock-table">
@@ -17,23 +39,33 @@ export default function LowStockItems() {
           </thead>
 
           <tbody>
-            <tr>
-              <td>Wireless Headphones</td>
-              <td>3</td>
-              <td>2</td>
-            </tr>
+            {lowStockItems.map((item) => (
+              <tr key={item.name}>
+                <td>
+                  {/* Keep the thumbnail beside the product name. */}
+                  <div className="stock-product">
+                    <div className="stock-product-image">
+                      {item.image ? (
+                        <img
+                          src={item.image}
+                          alt=""
+                          loading="lazy"
+                        />
+                      ) : (
+                        <span className="stock-image-placeholder">
+                          No image
+                        </span>
+                      )}
+                    </div>
 
-            <tr>
-              <td>Canvas Backpack</td>
-              <td>2</td>
-              <td>1</td>
-            </tr>
+                    <span>{item.name}</span>
+                  </div>
+                </td>
 
-            <tr>
-              <td>Water Bottle</td>
-              <td>5</td>
-              <td>0</td>
-            </tr>
+                <td>{item.available}</td>
+                <td>{item.reserved}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

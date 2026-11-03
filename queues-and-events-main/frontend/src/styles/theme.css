@@ -1,24 +1,39 @@
 :root {
-  /* Colors */
-  --color-sidebar: #073d2b;
-  --color-sidebar-hover: #296348;
-  --color-sidebar-text: #fffaf0;
-  --color-sidebar-muted: #d5e3cf;
+  /* Sidebar colors */
+--sidebar-width: 250px;
+--color-sidebar: #073d2b;
+--color-sidebar-hover: #296348;
+--color-sidebar-text: #fffaf0;
+--color-sidebar-muted: #d5e3cf;
+--color-sidebar-end: #002d20;
+--text-navigation: 18px;
+--sidebar-icon-size: 24px;
 
-  --color-background: #f8f5ed;
-  --color-card: #ffffff;
+  /* Page and panel colors */
+  --color-background: #f5efdf;
+  --color-card: #fffaf0;
   --color-heading: #123d2b;
-  --color-text: #24362a;
+  --color-text: #202820;
   --color-text-muted: #62715f;
-  --color-border: #e5e5dc;
+  --color-border: #d8d1c4;
 
   /* Status colors */
-  --color-success-bg: #e3efdc;
-  --color-success-text: #236d3c;
+  --color-success-bg: #dcefd0;
+  --color-success-text: #203a21;
+
   --color-warning-bg: #f6efd6;
   --color-warning-text: #756227;
-  --color-danger-bg: #fbe6df;
-  --color-danger-text: #a64131;
+
+  --color-danger-bg: #ffdedb;
+  --color-danger-text: #79211c;
+
+  --color-neutral-bg: #e2ebee;
+  --color-neutral-text: #26383d;
+
+  /* Table colors */
+  --color-table-header-bg: #e5eddf;
+  --color-table-header-text: #182b20;
+  --color-table-divider: #e5e2da;
 
   /* Fonts */
   --font-heading: Georgia, serif;
@@ -30,6 +45,9 @@
   --text-brand: 24px;
   --text-section: 24px;
   --text-title: 40px;
+  --text-table: 13px;
+  --text-table-heading: 12px;
+  --text-badge: 10px;
 
   /* Spacing */
   --space-xs: 4px;
@@ -44,8 +62,29 @@
   /* Layout */
   --sidebar-width: 250px;
 
-  /* Corners and shadows */
+  /* Corners */
   --radius-small: 8px;
   --radius-card: 14px;
+  --radius-pill: 999px;
+
+  /* Shadows */
   --shadow-card: 0 3px 10px rgb(18 61 43 / 5%);
+
+/* Order overview bars */
+--color-order-track: #eeede8;
+--color-order-created: #8fbd89;
+--color-order-reserved: #73a85f;
+--color-order-default: #a0c999;
+--color-order-payment: #15915c;
+--color-order-confirmed: #086540;
+
+
+/* Quick links */
+--color-shortcut-bg: #edf3e8;
+--color-shortcut-hover: #dcebd5;
+--color-shortcut-icon: #276b25;
+
+/* Notification counters */
+--color-notification-sent-bg: #e4f1e6;
+--color-notification-queued-bg: #eaf2e2;
 }

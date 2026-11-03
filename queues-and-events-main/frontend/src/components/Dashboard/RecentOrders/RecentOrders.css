@@ -1,66 +1,109 @@
+/* Recent orders panel */
 .orders-panel {
-  padding: var(--space-2xl);
+  min-width: 0;
+  padding: var(--space-md) var(--space-lg);
   background: var(--color-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
-  box-shadow: var(--shadow-card);
-  min-width: 0;
 }
 
+/* Panel heading */
 .orders-panel h2 {
-  margin: 0 0 var(--space-sm);
+  margin: 0 0 var(--space-md);
+  color: var(--color-heading);
   font-family: var(--font-heading);
   font-size: var(--text-section);
-  color: var(--color-heading);
+  font-weight: 700;
+  line-height: 1.2;
 }
 
+/* Hide the extra description. */
 .orders-panel > p {
-  margin: 0 0 var(--space-xl);
-  color: var(--color-text-muted);
-  font-size: var(--text-small);
+  display: none;
 }
 
-.table-container {
+/* Allow horizontal scrolling on narrow screens. */
+.orders-panel .table-container {
   overflow-x: auto;
 }
 
+/* Table typography */
 .orders-table {
   width: 100%;
-  border-collapse: collapse;
-  text-align: left;
+  border-collapse: separate;
+  border-spacing: 0;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--text-table);
+  line-height: 1.35;
 }
 
-.orders-table th {
-  padding: var(--space-md);
-  background: var(--color-background);
-  color: var(--color-heading);
-  font-weight: 600;
-}
-
+/* Center all headings and body cells. */
+.orders-table th,
 .orders-table td {
-  padding: var(--space-lg) var(--space-md);
-  border-bottom: 1px solid var(--color-border);
+  text-align: center;
+  vertical-align: middle;
 }
 
-.status-badge {
-  display: inline-block;
-  padding: var(--space-xs) var(--space-md);
-  border-radius: var(--radius-small);
-  font-size: var(--text-small);
+/* Table header */
+.orders-table th {
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-table-header-bg);
+  color: var(--color-table-header-text);
+  font-size: var(--text-table-heading);
+  font-weight: 700;
   white-space: nowrap;
 }
 
-.status-success {
+/* Rounded header corners */
+.orders-table th:first-child {
+  border-radius: var(--radius-small) 0 0 var(--radius-small);
+}
+
+.orders-table th:last-child {
+  border-radius: 0 var(--radius-small) var(--radius-small) 0;
+}
+
+/* Bold table body text */
+.orders-table td {
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid var(--color-table-divider);
+  font-weight: 600;
+}
+
+.orders-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* Center the text inside status badges. */
+.orders-table .status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-body);
+  font-size: var(--text-badge);
+  font-weight: 800;
+  line-height: 1.2;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Confirmed */
+.orders-table .status-success {
   background: var(--color-success-bg);
   color: var(--color-success-text);
 }
 
-.status-warning {
-  background: var(--color-warning-bg);
-  color: var(--color-warning-text);
+/* Created */
+.orders-table .status-neutral {
+  background: var(--color-neutral-bg);
+  color: var(--color-neutral-text);
 }
 
-.status-danger {
+/* Cancelled */
+.orders-table .status-danger {
   background: var(--color-danger-bg);
   color: var(--color-danger-text);
 }

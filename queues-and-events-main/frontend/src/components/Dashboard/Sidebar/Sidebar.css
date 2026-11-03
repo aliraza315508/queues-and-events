@@ -1,0 +1,108 @@
+/* Full-height sidebar with a dark green gradient. */
+.sidebar {
+  position: sticky;
+  top: 0;
+  width: var(--sidebar-width);
+  height: 100vh;
+  flex-shrink: 0;
+  overflow-y: auto;
+
+  padding: var(--space-3xl) var(--space-sm);
+  background: linear-gradient(
+    150deg,
+    var(--color-sidebar),
+    var(--color-sidebar-end)
+  );
+  color: var(--color-sidebar-text);
+}
+
+/* Store name and subtitle */
+.sidebar-brand {
+  padding: 0 var(--space-lg);
+  margin-bottom: var(--space-4xl);
+}
+
+.sidebar-brand h2 {
+  margin: 0 0 var(--space-sm);
+  font-family: var(--font-heading);
+  font-size: var(--text-brand);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.sidebar-brand p {
+  margin: 0;
+  padding-left: var(--space-xs);
+  color: var(--color-sidebar-muted);
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+}
+
+/* Compact vertical navigation */
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+/* Align each icon beside its label. */
+.sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  min-height: 48px;
+  padding: var(--space-md) var(--space-xl);
+
+  border-radius: var(--radius-small);
+  color: var(--color-sidebar-text);
+  font-family: var(--font-body);
+  font-size: var(--text-navigation);
+  line-height: 1.3;
+  text-decoration: none;
+}
+
+/* Consistent icon dimensions */
+.sidebar-nav svg {
+  width: var(--sidebar-icon-size);
+  height: var(--sidebar-icon-size);
+  flex-shrink: 0;
+}
+
+/* Selected and hovered links */
+.sidebar-nav a.active,
+.sidebar-nav a:hover {
+  background: var(--color-sidebar-hover);
+}
+
+/* Keyboard focus */
+.sidebar-nav a:focus-visible {
+  outline: 2px solid var(--color-sidebar-muted);
+  outline-offset: -2px;
+}
+
+/* Horizontal navigation on small screens.
+   App.css already stacks the sidebar above the content. */
+@media (max-width: 700px) {
+  .sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+    padding: var(--space-lg);
+  }
+
+  .sidebar-brand {
+    margin-bottom: var(--space-lg);
+  }
+
+  .sidebar-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+
+  .sidebar-nav a {
+    min-height: 44px;
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--text-body);
+  }
+}

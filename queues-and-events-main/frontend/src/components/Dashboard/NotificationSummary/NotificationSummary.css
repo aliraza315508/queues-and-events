@@ -1,61 +1,75 @@
+/* Notifications panel */
 .notification-summary {
   min-width: 0;
-  padding: var(--space-2xl);
+  padding: var(--space-md) var(--space-lg);
   background: var(--color-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
-  box-shadow: var(--shadow-card);
 }
 
 .notification-summary h2 {
   margin: 0 0 var(--space-xl);
+  color: var(--color-heading);
   font-family: var(--font-heading);
   font-size: var(--text-section);
-  color: var(--color-heading);
+  font-weight: 700;
+  line-height: 1.2;
 }
 
+/* Four equal counters. */
 .notification-summary-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--space-sm);
 }
 
+/* Center each status and count. */
 .notification-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
   min-width: 0;
-  padding: var(--space-lg) var(--space-xs);
+  min-height: 88px;
+  padding: var(--space-md) var(--space-xs);
   border-radius: var(--radius-small);
+  color: var(--color-heading);
   text-align: center;
 }
 
+/* Compact bold status labels. */
 .notification-stat h3 {
-  margin: 0 0 var(--space-sm);
+  margin: 0;
   font-family: var(--font-body);
-  font-size: var(--text-small);
-  font-weight: 400;
+  font-size: var(--text-badge);
+  font-weight: 700;
+  line-height: 1.2;
 }
 
+/* Large serif counts. */
 .notification-stat p {
   margin: 0;
   font-family: var(--font-heading);
-  font-size: var(--text-section);
+  font-size: var(--text-title);
+  font-weight: 700;
+  line-height: 1;
 }
 
-.notification-stat-success {
-  background: var(--color-success-bg);
-  color: var(--color-success-text);
+/* Status backgrounds from theme.css. */
+.notification-stat--sent {
+  background: var(--color-notification-sent-bg);
 }
 
-.notification-stat-neutral {
-  background: var(--color-background);
-  color: var(--color-heading);
+.notification-stat--queued {
+  background: var(--color-notification-queued-bg);
 }
 
-.notification-stat-warning {
+.notification-stat--pending {
   background: var(--color-warning-bg);
-  color: var(--color-warning-text);
 }
 
-.notification-stat-danger {
+.notification-stat--failed {
   background: var(--color-danger-bg);
   color: var(--color-danger-text);
 }
