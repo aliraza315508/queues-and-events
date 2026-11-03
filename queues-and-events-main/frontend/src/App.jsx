@@ -11,19 +11,13 @@ export default function App() {
     <main className="app">
       <header className="app-header">
         <h1>E-Commerce Platform</h1>
-        <nav className="app-nav" aria-label="Service sections">
-          <a href="#customer">Accounts</a>
+        <nav className="app-nav" aria-label="Admin sections">
           <a href="#inventory">Inventory</a>
           <a href="#order">Orders</a>
           <a href="#notification">Notifications</a>
         </nav>
       </header>
-      <CustomersPage />
-      <ProductsPage />
-      <InventoryPage />
-      <OrdersPage />
-      <PaymentsPage />
-      <NotificationsPage />
+        <CustomersPage />
     </main>
   )
 }
