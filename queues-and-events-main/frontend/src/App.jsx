@@ -12,11 +12,9 @@ export default function App() {
       <header className="app-header">
         <h1>E-Commerce Platform</h1>
         <nav className="app-nav" aria-label="Service sections">
-          <a href="#product">Products</a>
           <a href="#customer">Accounts</a>
           <a href="#inventory">Inventory</a>
           <a href="#order">Orders</a>
-          <a href="#payment">Payments</a>
           <a href="#notification">Notifications</a>
         </nav>
       </header>

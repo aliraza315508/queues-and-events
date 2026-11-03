@@ -1,6 +1,17 @@
+import { productImages } from '../assets/productImages'
 export default function ProductCard({ product }) {
   return (
     <article className="product-card">
+        {productImages[product.sku] && (
+          <img
+            src={productImages[product.sku]}
+            alt={product.name}
+            width={180}
+            height={140}
+            loading="lazy"
+            style={{ objectFit: 'contain', borderRadius: '8px' }}
+          />
+        )}
       <h3>{product.name ?? 'Product'}</h3>
       <dl>
         <div><dt>ID</dt><dd>{product.id ?? 'Not provided'}</dd></div>
