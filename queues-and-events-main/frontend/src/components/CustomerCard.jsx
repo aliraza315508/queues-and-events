@@ -1,7 +1,8 @@
-export default function CustomerCard({ customer, onView }) {
+export default function CustomerCard({ customer, onView , isSelected }) {
   return (
-    <article className="customer-card">
-      {customer.photoUrl ? (
+<article
+  className={`customer-card${isSelected ? ' customer-card--selected' : ''}`}
+>      {customer.photoUrl ? (
         <img
           className="customer-photo"
           src={customer.photoUrl}
