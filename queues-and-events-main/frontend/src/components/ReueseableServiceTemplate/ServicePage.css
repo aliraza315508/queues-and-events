@@ -1,0 +1,454 @@
+/* ========================================
+   1. PAGE HEADING
+   ======================================== */
+
+.service-page {
+  padding: var(--space-sm) 0 var(--space-3xl);
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+
+.service-page-header h1 {
+  margin: 0 0 var(--space-xs);
+  color: var(--color-heading);
+  font-family: var(--font-heading);
+  font-size: var(--text-title);
+  line-height: 1.15;
+}
+
+.service-page-header p {
+  margin: 0 0 var(--space-xl);
+  color: var(--color-text-muted);
+  font-size: var(--text-body);
+}
+
+
+/* ========================================
+   2. SUMMARY CARDS
+   ======================================== */
+
+.service-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+.service-summary-card {
+  min-width: 0;
+  padding: var(--space-lg);
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+.service-summary-card h2 {
+  margin: 0 0 var(--space-sm);
+  color: var(--color-heading);
+  font-size: var(--text-small);
+  font-weight: 700;
+}
+
+.service-summary-card strong {
+  color: var(--color-heading);
+  font-size: var(--text-section);
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+
+/* ========================================
+   3. SEARCH AND TOOLBAR
+   ======================================== */
+
+.service-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+.service-search {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 430px;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-small);
+}
+
+.service-search svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+}
+
+.service-search input {
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  font-size: var(--text-table);
+}
+
+.service-search input::placeholder {
+  color: var(--color-text-muted);
+  opacity: 1;
+}
+
+.service-search:focus-within {
+  outline: 2px solid var(--color-shortcut-icon);
+  outline-offset: 2px;
+}
+
+
+/* ========================================
+   4. FILTER CONTROLS
+   ======================================== */
+
+.service-filter {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  color: var(--color-text);
+  font-size: var(--text-table);
+}
+
+.service-filter select {
+  max-width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-small);
+  background: var(--color-card);
+  color: var(--color-heading);
+  font: inherit;
+  cursor: pointer;
+}
+
+.service-filter input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--color-shortcut-icon);
+  cursor: pointer;
+}
+
+.service-filter-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.service-filter-tabs button {
+  padding: var(--space-sm) var(--space-lg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-small);
+  background: var(--color-card);
+  color: var(--color-heading);
+  font: inherit;
+  font-size: var(--text-table);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.service-filter-tabs button:hover {
+  background: var(--color-shortcut-hover);
+}
+
+.service-filter-tabs button[aria-pressed='true'] {
+  border-color: var(--color-sidebar-hover);
+  background: var(--color-sidebar-hover);
+  color: var(--color-sidebar-text);
+}
+
+.service-filter select:focus-visible,
+.service-filter input:focus-visible,
+.service-filter-tabs button:focus-visible {
+  outline: 2px solid var(--color-shortcut-icon);
+  outline-offset: 3px;
+}
+
+
+/* ========================================
+   5. TABLE AND PANEL LAYOUT
+   ======================================== */
+
+.service-content-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-xl);
+  align-items: start;
+}
+
+.service-content-layout.has-details {
+  grid-template-columns: minmax(0, 1fr) 320px;
+}
+
+
+/* ========================================
+   6. TABLE
+   ======================================== */
+
+.service-table-wrapper {
+  min-width: 0;
+  overflow-x: auto;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+.service-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: var(--text-table);
+}
+
+.service-table caption {
+  padding: var(--space-md) var(--space-lg);
+  color: var(--color-heading);
+  font-weight: 700;
+  text-align: left;
+}
+
+.service-table th {
+  padding: var(--space-md) var(--space-lg);
+  background: var(--color-table-header-bg);
+  color: var(--color-table-header-text);
+  font-size: var(--text-table-heading);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.service-table td {
+  padding: var(--space-md) var(--space-lg);
+  border-top: 1px solid var(--color-table-divider);
+  color: var(--color-text);
+  overflow-wrap: anywhere;
+}
+
+.service-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.service-table tbody tr:nth-child(even) {
+  background: var(--color-background);
+}
+
+.service-table tbody tr:hover {
+  background: var(--color-shortcut-bg);
+}
+
+.service-table tbody tr.service-row-selected {
+  background: var(--color-shortcut-hover);
+}
+
+.service-table-empty {
+  margin: 0;
+  padding: var(--space-2xl);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+
+/* ========================================
+   7. DETAILS BUTTONS
+   ======================================== */
+
+.service-details-button {
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-small);
+  background: var(--color-shortcut-bg);
+  color: var(--color-heading);
+  font: inherit;
+  font-size: var(--text-small);
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.service-details-button:hover {
+  background: var(--color-shortcut-hover);
+}
+
+.service-details-button:focus-visible {
+  outline: 2px solid var(--color-shortcut-icon);
+  outline-offset: 3px;
+}
+
+
+/* ========================================
+   8. DETAILS PANEL
+   ======================================== */
+
+.service-details-panel {
+  min-width: 0;
+  padding: var(--space-xl);
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+.service-details-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+.service-details-header h2 {
+  margin: 0;
+  color: var(--color-heading);
+  font-family: var(--font-heading);
+  font-size: var(--text-section);
+}
+
+.service-details-panel dl {
+  margin: 0;
+}
+
+.service-details-panel dl > div {
+  margin-bottom: var(--space-md);
+  padding: var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-small);
+  background: var(--color-shortcut-bg);
+  transition: background-color 0.2s ease;
+}
+
+.service-details-panel dl > div:hover {
+  background: var(--color-shortcut-hover);
+}
+
+.service-details-panel dt {
+  margin-bottom: var(--space-xs);
+  color: var(--color-heading);
+  font-size: var(--text-table);
+  font-weight: 700;
+}
+
+.service-details-panel dd {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--text-table);
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+
+/* ========================================
+   9. REQUEST STATUS
+   ======================================== */
+
+.service-status,
+.service-error {
+  padding: var(--space-lg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-small);
+}
+
+.service-status {
+  color: var(--color-neutral-text);
+  background: var(--color-neutral-bg);
+}
+
+.service-error {
+  color: var(--color-danger-text);
+  background: var(--color-danger-bg);
+}
+
+
+/* ========================================
+   10. STATUS BADGES
+   ======================================== */
+
+.service-badge {
+  display: inline-block;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-small);
+  font-size: var(--text-badge);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.service-badge--success {
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
+}
+
+.service-badge--warning {
+  background: var(--color-warning-bg);
+  color: var(--color-warning-text);
+}
+
+.service-badge--danger {
+  background: var(--color-danger-bg);
+  color: var(--color-danger-text);
+}
+
+
+/* ========================================
+   11. RESPONSIVE LAYOUT
+   ======================================== */
+
+@media (max-width: 1100px) {
+  .service-content-layout.has-details {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 800px) {
+  .service-summary-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* ========================================
+   12. REDUCED MOTION
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .service-table tbody tr,
+  .service-details-button,
+  .service-details-panel dl > div,
+  .service-filter-tabs button {
+    transition: none;
+  }
+}
+
+/* Optional summary icons */
+.service-summary-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.service-summary-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: var(--color-shortcut-icon);
+}
+
+.service-summary-icon svg {
+  display: block;
+  width: 30px;
+  height: 30px;
+}

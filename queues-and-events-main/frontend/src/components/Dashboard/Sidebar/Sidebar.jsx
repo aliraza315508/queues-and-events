@@ -91,14 +91,15 @@ export default function Sidebar({activePage , onNavigate}) {
                event.preventDefault()
                const page = item.href.slice(1)
 
-               if (
-                 page === 'overview' ||
-                 page === 'customers' ||
-                 page === 'products'
-               ) {
-                   event.preventDefault()
-                   onNavigate(page)
-                   }
+             if (
+               page === 'overview' ||
+               page === 'customers' ||
+               page === 'products' ||
+               page === 'inventory'
+             ) {
+               event.preventDefault()
+               onNavigate(page)
+             }
 
                }}
            className ={

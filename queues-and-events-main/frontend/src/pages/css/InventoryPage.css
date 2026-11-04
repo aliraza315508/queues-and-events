@@ -23,3 +23,63 @@
 .inventory-card dt { font-weight: 600; color: #475569; }
 .inventory-card dd { margin: 4px 0 0; overflow-wrap: anywhere; white-space: pre-wrap; }
 .inventory-page [role="alert"] { color: #b91c1c; }
+
+
+/* Inventory-specific summary icon */
+.inventory-warning-icon {
+  display: inline-flex;
+  color: var(--color-warning-text);
+}
+
+/* Badge, stock bar, and percentage */
+.inventory-stock-level {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  min-width: 250px;
+}
+
+.inventory-stock-level .service-badge {
+  min-width: 85px;
+  text-align: center;
+}
+
+.inventory-stock-level > span:last-child {
+  min-width: 36px;
+  text-align: right;
+}
+
+/* Native progress bar */
+.inventory-stock-bar {
+  --stock-fill: var(--color-order-confirmed);
+  appearance: none;
+  width: 110px;
+  height: 10px;
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--color-order-track);
+}
+
+.inventory-stock-bar--warning {
+  --stock-fill: var(--color-warning-text);
+}
+
+.inventory-stock-bar--danger {
+  --stock-fill: var(--color-danger-text);
+}
+
+.inventory-stock-bar::-webkit-progress-bar {
+  background: var(--color-order-track);
+  border-radius: var(--radius-pill);
+}
+
+.inventory-stock-bar::-webkit-progress-value {
+  background: var(--stock-fill);
+  border-radius: var(--radius-pill);
+}
+
+.inventory-stock-bar::-moz-progress-bar {
+  background: var(--stock-fill);
+  border-radius: var(--radius-pill);
+}

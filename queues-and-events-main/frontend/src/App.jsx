@@ -16,6 +16,7 @@ import NotificationSummary from './components/Dashboard/NotificationSummary/Noti
 // Service pages
 import CustomersPage from './pages/CustomersPage'
 import ProductsPage from './pages/ProductsPage'
+import InventoryPage from './pages/InventoryPage'
 
 
 export default function App() {
@@ -51,6 +52,7 @@ export default function App() {
 
         {activePage === 'customers' && <CustomersPage />}
         {activePage === 'products' && <ProductsPage />}
+        {activePage === 'inventory' && <InventoryPage />}
       </main>
     </div>
   )
