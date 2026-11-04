@@ -73,7 +73,7 @@ const navigation = [
   },
 ]
 
-export default function Sidebar() {
+export default function Sidebar({activePage , onNavigate}) {
   return (
     <aside className="sidebar">
       {/* Store branding */}
@@ -87,11 +87,22 @@ export default function Sidebar() {
           <a
             key={item.href}
             href={item.href}
-            // Overview stays selected while building the dashboard.
-            className={item.href === '#overview' ? 'active' : ''}
-            aria-current={
-              item.href === '#overview' ? 'page' : undefined
-            }
+           onClick = {(event) => {
+               event.preventDefault()
+               const page = item.href.slice(1)
+
+               if(page === 'overview' || page === 'customers'){
+                   event.preventDefault()
+                   onNavigate(page)
+                   }
+
+               }}
+           className ={
+               item.href === `#${activePage}` ? `active` : ``
+               }
+           aria-current={
+               item.href === `#${activePage}` ? `page` : undefined
+               }
           >
             <svg
               viewBox="0 0 24 24"

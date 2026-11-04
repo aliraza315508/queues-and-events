@@ -1,22 +1,11 @@
-/* ========================================
-   1. APPLICATION STYLES
-   ======================================== */
-
 import './App.css'
+import { useState } from 'react'
 
-
-/* ========================================
-   2. LAYOUT COMPONENTS
-   ======================================== */
-
+// Layout components
 import Sidebar from './components/Dashboard/Sidebar/Sidebar'
 import DashboardHeader from './components/Dashboard/DashboardHeader/DashboardHeader'
 
-
-/* ========================================
-   3. DASHBOARD COMPONENTS
-   ======================================== */
-
+// Dashboard components
 import SummaryGrid from './components/Dashboard/SummaryGrid/SummaryGrid'
 import RecentOrders from './components/Dashboard/RecentOrders/RecentOrders'
 import LowStockItems from './components/Dashboard/LowStockItems/LowStockItems'
@@ -24,40 +13,41 @@ import OrderOverview from './components/Dashboard/OrderOverview/OrderOverview'
 import QuickLinks from './components/Dashboard/QuickLinks/QuickLinks'
 import NotificationSummary from './components/Dashboard/NotificationSummary/NotificationSummary'
 
-
-/* ========================================
-   4. APPLICATION
-   ======================================== */
+// Service pages
+import CustomersPage from './pages/CustomersPage'
 
 export default function App() {
+  const [activePage, setActivePage] = useState('overview')
+
   return (
     <div className="admin-layout">
-      {/* Left navigation — rendered only once. */}
-      <Sidebar />
+      <Sidebar
+        activePage={activePage}
+        onNavigate={setActivePage}
+      />
 
-      {/* Main dashboard content */}
-      <main className="dashboard-content" id="overview">
-        {/* Title, Admin display, and Refresh button */}
-        <DashboardHeader />
+      <main className="dashboard-content">
+        {activePage === 'overview' && (
+          <>
+            <DashboardHeader />
+            <SummaryGrid />
 
-        {/* Total orders, completed payments, customers, low stock */}
-        <SummaryGrid />
+            <div className="dashboard-row">
+              <div className="dashboard-column">
+                <RecentOrders />
+                <OrderOverview />
+              </div>
 
-        {/* Two-column dashboard layout */}
-        <div className="dashboard-row">
-          {/* Left column */}
-          <div className="dashboard-column">
-            <RecentOrders />
-            <OrderOverview />
-          </div>
+              <div className="dashboard-column">
+                <LowStockItems />
+                <QuickLinks />
+                <NotificationSummary />
+              </div>
+            </div>
+          </>
+        )}
 
-          {/* Right column */}
-          <div className="dashboard-column">
-            <LowStockItems />
-            <QuickLinks />
-            <NotificationSummary />
-          </div>
-        </div>
+        {activePage === 'customers' && <CustomersPage />}
       </main>
     </div>
   )
