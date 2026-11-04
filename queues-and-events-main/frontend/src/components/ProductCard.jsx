@@ -1,28 +1,43 @@
 import { productImages } from '../assets/productImages'
-export default function ProductCard({ product }) {
+
+export default function ProductCard({ product , onViewDetails }) {
+  const image = productImages[product.sku]
+
+  const price = product.price == null
+    ? 'Price unavailable'
+    : new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+      }).format(product.price)
+
   return (
     <article className="product-card">
-        {productImages[product.sku] && (
+      <div className="product-card-image">
+        {image ? (
           <img
-            src={productImages[product.sku]}
-            alt={product.name}
-            width={180}
-            height={140}
+            src={image}
+            alt={product.name ?? 'Product'}
             loading="lazy"
-            style={{ objectFit: 'contain', borderRadius: '8px' }}
           />
+        ) : (
+          <span>No image available</span>
         )}
-      <h3>{product.name ?? 'Product'}</h3>
-      <dl>
-        <div><dt>ID</dt><dd>{product.id ?? 'Not provided'}</dd></div>
-        <div><dt>Sku</dt><dd>{product.sku ?? 'Not provided'}</dd></div>
-        <div><dt>Name</dt><dd>{product.name ?? 'Not provided'}</dd></div>
-        <div><dt>Description</dt><dd>{product.description ?? 'Not provided'}</dd></div>
-        <div><dt>Price</dt><dd>{product.price ?? 'Not provided'}</dd></div>
-        <div><dt>Active</dt><dd>{product.active == null ? 'Not provided' : product.active ? 'Yes' : 'No'}</dd></div>
-        <div><dt>Created at</dt><dd>{product.createdAt ?? 'Not provided'}</dd></div>
-        <div><dt>Updated at</dt><dd>{product.updatedAt ?? 'Not provided'}</dd></div>
-      </dl>
+      </div>
+
+      <h3>{product.name ?? 'Unnamed product'}</h3>
+
+      <p className="product-card-sku">
+        SKU: {product.sku ?? 'Not provided'}
+      </p>
+
+      <p className="product-card-price">{price}</p>
+
+      <button type="button"
+      className="product-details-button"
+      onClick={() => onViewDetails(product)}
+      >
+        View details
+      </button>
     </article>
   )
 }

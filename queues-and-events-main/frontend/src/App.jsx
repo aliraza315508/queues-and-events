@@ -15,6 +15,8 @@ import NotificationSummary from './components/Dashboard/NotificationSummary/Noti
 
 // Service pages
 import CustomersPage from './pages/CustomersPage'
+import ProductsPage from './pages/ProductsPage'
+
 
 export default function App() {
   const [activePage, setActivePage] = useState('overview')
@@ -48,6 +50,7 @@ export default function App() {
         )}
 
         {activePage === 'customers' && <CustomersPage />}
+        {activePage === 'products' && <ProductsPage />}
       </main>
     </div>
   )
