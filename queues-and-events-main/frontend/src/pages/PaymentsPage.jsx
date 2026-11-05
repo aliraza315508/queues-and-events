@@ -1,12 +1,18 @@
 import { useEffect, useState } from 'react'
 import { getPayments } from '../api/paymentApi'
-import PaymentCard from '../components/PaymentCard'
+import ServicePage from '../components/ReueseableServiceTemplate/ServicePage'
+import StatusBadge from '../components/ReueseableServiceTemplate/StatusBadge'
+import SummaryIcon from '../components/ReueseableServiceTemplate/SummaryIcon'
 import './css/PaymentsPage.css'
+
+
 
 export default function PaymentsPage() {
   const [items, setItems] = useState([])
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
+  const [search, setSearch] = useState('')
+  const [status, setStatus] = useState('')
 
   useEffect(() => {
     const controller = new AbortController()
@@ -26,15 +32,87 @@ export default function PaymentsPage() {
     return () => controller.abort()
   }, [])
 
-  return (
-    <section id="payment" className="payment-page" aria-labelledby="payment-heading">
-      <h2 id="payment-heading">Payments</h2>
-      {loading && <p role="status">Loading payments...</p>}
-      {error && <p role="alert">{error}</p>}
-      {!loading && !error && items.length === 0 && <p>No payments found.</p>}
-      <div className="payment-grid">
-        {items.map((item) => <PaymentCard key={item.id} payment={item} />)}
-      </div>
-    </section>
-  )
+
+// Filter the table while keeping summary cards based on all payments.
+const filteredItems = items.filter((payment) => {
+  const matchesSearch = String(payment.orderId ?? '')
+    .toLowerCase()
+    .includes(search.trim().toLowerCase())
+
+  const matchesStatus = !status || payment.status === status
+
+  return matchesSearch && matchesStatus
+})
+
+
+   return (
+     <ServicePage
+       title="Payments"
+       description="View payment records processed for orders."
+             summaries={[
+               {
+                 label: 'Completed amount',
+                 value: items
+                   .filter((payment) => payment.status === 'COMPLETED')
+                   .reduce(
+                     (total, payment) => total + Number(payment.amount ?? 0),
+                     0
+                   )
+                   .toLocaleString('en-US', {
+                     style: 'currency',
+                     currency: 'USD',
+                   }),
+                 icon: <SummaryIcon type="available" />,
+               },
+               {
+                 label: 'Completed',
+                 value: items.filter(
+                   (payment) => payment.status === 'COMPLETED'
+                 ).length,
+                 icon: <SummaryIcon type="reserved" />,
+               },
+               {
+                 label: 'Failed',
+                 value: items.filter(
+                   (payment) => payment.status === 'FAILED'
+                 ).length,
+                 icon: <SummaryIcon type="warning" />,
+               },
+             ]}
+       columns={[
+         { key: 'id', label: 'Payment ID' },
+         { key: 'orderId', label: 'Order ID' },
+         { key: 'customerId', label: 'Customer ID' },
+         { key: 'amount', label: 'Amount' },
+         { key: 'paymentMethod', label: 'Method' },
+         {
+           key: 'status',
+           label: 'Status',
+           render: (payment) => (
+             <StatusBadge status={payment.status} />
+           ),
+         },
+       ]}
+       items={filteredItems}
+       search={search}
+       onSearchChange={setSearch}
+       searchPlaceholder="Search by order ID..."
+       filters={
+         <label className="service-filter">
+           Status
+           <select
+             value={status}
+             onChange={(event) => setStatus(event.target.value)}
+           >
+             <option value="">All statuses</option>
+             <option value="COMPLETED">Completed</option>
+             <option value="FAILED">Failed</option>
+           </select>
+         </label>
+       }
+       loading={loading}
+       error={error}
+       emptyMessage="No payments found."
+     />
+   )
 }

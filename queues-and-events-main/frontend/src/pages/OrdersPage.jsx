@@ -3,6 +3,7 @@ import { getOrders } from '../api/orderApi'
 import ServicePage from '../components/ReueseableServiceTemplate/ServicePage'
 import StatusBadge from '../components/ReueseableServiceTemplate/StatusBadge'
 import SummaryIcon from '../components/ReueseableServiceTemplate/SummaryIcon'
+import './css/OrdersPage.css'
 
 // Status values used by the backend.
 const statuses = [

@@ -1,25 +1,34 @@
-.order-page {
-  margin-top: 32px;
-  scroll-margin-top: 20px;
-}
-
-.order-grid {
+/* Arrange order details as compact label/value rows. */
+.orders-page .service-details-panel dl > div {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
-  gap: 20px;
+  grid-template-columns: 90px minmax(0, 1fr);
+  gap: var(--space-sm);
+  margin: 0;
+  padding: var(--space-xs) 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
 }
 
-.order-card {
-  min-width: 0;
-  padding: 24px;
-  background: #fff;
-  border: 1px solid #dce2ea;
-  border-radius: 12px;
+/* Keep each row's background consistent when hovering. */
+.orders-page .service-details-panel dl > div:hover {
+  background: transparent;
 }
 
-.order-card h3 { margin: 0 0 16px; overflow-wrap: anywhere; }
-.order-card dl { margin: 0; }
-.order-card dl > div { margin-top: 12px; }
-.order-card dt { font-weight: 600; color: #475569; }
-.order-card dd { margin: 4px 0 0; overflow-wrap: anywhere; white-space: pre-wrap; }
-.order-page [role="alert"] { color: #b91c1c; }
+/* Labels appear beside their values. */
+.orders-page .service-details-panel dt {
+  margin: 0;
+  font-weight: 400;
+}
+
+.orders-page .service-details-panel dd {
+  margin: 0;
+  white-space: normal;
+}
+
+/* Keep status text on one line. */
+.orders-page .service-badge {
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: normal;
+}

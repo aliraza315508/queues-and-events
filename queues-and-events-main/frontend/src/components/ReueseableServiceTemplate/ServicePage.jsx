@@ -35,7 +35,7 @@ export default function ServicePage({
   const showDetails = Boolean(selectedItem && renderDetails)
 
   return (
-    <section className="service-page">
+    <section className={`service-page ${title.toLowerCase()}-page`}>
       {/* 1. Page heading */}
       <header className="service-page-header">
         <h1>{title}</h1>
@@ -60,8 +60,7 @@ export default function ServicePage({
               <h2>{summary.label}</h2>
               <strong>{summary.value}</strong>
             </div>
-              <h2>{summary.label}</h2>
-              <strong>{summary.value}</strong>
+
             </article>
           ))}
         </div>
