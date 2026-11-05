@@ -87,21 +87,21 @@ export default function Sidebar({activePage , onNavigate}) {
           <a
             key={item.href}
             href={item.href}
-           onClick = {(event) => {
-               event.preventDefault()
-               const page = item.href.slice(1)
+           onClick={(event) => {
+             event.preventDefault()
+             const page = item.href.slice(1)
 
              if (
                page === 'overview' ||
                page === 'customers' ||
                page === 'products' ||
-               page === 'inventory'
+               page === 'inventory' ||
+               page === 'orders' ||
+               page === 'payments'
              ) {
-               event.preventDefault()
                onNavigate(page)
              }
-
-               }}
+           }}
            className ={
                item.href === `#${activePage}` ? `active` : ``
                }

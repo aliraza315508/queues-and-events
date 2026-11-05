@@ -12,6 +12,8 @@ import LowStockItems from './components/Dashboard/LowStockItems/LowStockItems'
 import OrderOverview from './components/Dashboard/OrderOverview/OrderOverview'
 import QuickLinks from './components/Dashboard/QuickLinks/QuickLinks'
 import NotificationSummary from './components/Dashboard/NotificationSummary/NotificationSummary'
+import OrdersPage from './pages/OrdersPage'
+import PaymentsPage from './pages/PaymentsPage'
 
 // Service pages
 import CustomersPage from './pages/CustomersPage'
@@ -53,6 +55,8 @@ export default function App() {
         {activePage === 'customers' && <CustomersPage />}
         {activePage === 'products' && <ProductsPage />}
         {activePage === 'inventory' && <InventoryPage />}
+        {activePage === 'orders' && <OrdersPage />}
+        {activePage === 'payments' && <PaymentsPage />}
       </main>
     </div>
   )
