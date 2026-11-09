@@ -6,7 +6,34 @@ import SummaryIcon from '../components/ReueseableServiceTemplate/SummaryIcon'
 import './css/PaymentsPage.css'
 
 
+function renderPaymentDetails(payment) {
+  const amount = payment.amount == null
+    ? 'Not provided'
+    : Number(payment.amount).toLocaleString('en-US', {
+        style: 'currency',
+        currency: 'USD',
+      })
 
+  const details = [
+    ['Payment ID', payment.id],
+    ['Order ID', payment.orderId],
+    ['Customer ID', payment.customerId],
+    ['Amount', amount],
+    ['Method', payment.paymentMethod],
+    ['Status', <StatusBadge status={payment.status} />],
+  ]
+
+  return (
+    <dl>
+      {details.map(([label, value]) => (
+        <div key={label}>
+          <dt>{label}</dt>
+          <dd>{value ?? 'Not provided'}</dd>
+        </div>
+      ))}
+    </dl>
+  )
+}
 export default function PaymentsPage() {
   const [items, setItems] = useState([])
   const [error, setError] = useState('')
@@ -113,6 +140,8 @@ const filteredItems = items.filter((payment) => {
        loading={loading}
        error={error}
        emptyMessage="No payments found."
+       detailsTitle="Payment details"
+       renderDetails={renderPaymentDetails}
      />
    )
 }

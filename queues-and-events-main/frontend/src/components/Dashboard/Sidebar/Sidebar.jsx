@@ -97,7 +97,8 @@ export default function Sidebar({activePage , onNavigate}) {
                page === 'products' ||
                page === 'inventory' ||
                page === 'orders' ||
-               page === 'payments'
+               page === 'payments' ||
+               page === 'notifications'
              ) {
                onNavigate(page)
              }
