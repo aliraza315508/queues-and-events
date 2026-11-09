@@ -8,11 +8,11 @@
   overflow-y: auto;
 
   padding: var(--space-3xl) var(--space-sm);
-  background: linear-gradient(
-    150deg,
-    var(--color-sidebar),
-    var(--color-sidebar-end)
-  );
+background-color: var(--color-sidebar-end);
+background-image: url('../../../assets/sidebar-background.png');
+background-position: center top;
+background-repeat: no-repeat;
+background-size: cover;
   color: var(--color-sidebar-text);
 }
 
@@ -88,6 +88,7 @@
     width: 100%;
     height: auto;
     padding: var(--space-lg);
+    background-image: none;
   }
 
   .sidebar-brand {
