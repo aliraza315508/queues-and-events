@@ -134,7 +134,7 @@ export default function NotificationsPage() {
         strokeLinecap="round"
         strokeLinejoin="round"
       >
-        <path d={iconPath} />
+        <path pathLength="1" d={iconPath} />
       </svg>
     ),
   }))

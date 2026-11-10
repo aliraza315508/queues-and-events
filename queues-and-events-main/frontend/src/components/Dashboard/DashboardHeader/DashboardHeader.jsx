@@ -1,17 +1,23 @@
 // Load the styles for this header.
 import './DashboardHeader.css'
 
-export default function DashboardHeader() {
+export default function DashboardHeader({
+  title = 'Dashboard',
+  description = 'Your store at a glance',
+  headingId,
+  showOverviewActions = false,
+})  {
   return (
     <header className="dashboard-header">
       {/* Left side: dashboard title and description. */}
       <div>
-        <h1>Dashboard</h1>
-        <p>Your store at a glance</p>
+<h1 id={headingId}>{title}</h1>
+<p>{description}</p>
       </div>
 
       {/* Right side: sample-data label, admin display, and refresh. */}
-      <div className="dashboard-header-actions">
+
+      {showOverviewActions && (<div className="dashboard-header-actions">
         <div className="dashboard-account">
           {/* Dashboard values are currently hardcoded samples. */}
           <span className="sample-data-label">Sample data</span>
@@ -60,6 +66,7 @@ export default function DashboardHeader() {
           Refresh data
         </button>
       </div>
+      )}
     </header>
   )
 }

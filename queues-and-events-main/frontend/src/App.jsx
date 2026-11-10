@@ -27,6 +27,7 @@ export default function App() {
 
   return (
     <div className="admin-layout">
+
       <Sidebar
         activePage={activePage}
         onNavigate={setActivePage}
@@ -35,7 +36,7 @@ export default function App() {
       <main className="dashboard-content">
         {activePage === 'overview' && (
           <>
-            <DashboardHeader />
+            <DashboardHeader showOverviewActions />
             <div className="overview-body">
             <SummaryGrid />
 
@@ -50,6 +51,7 @@ export default function App() {
                 <QuickLinks />
                 <NotificationSummary />
               </div>
+            </div>
             </div>
           </>
         )}

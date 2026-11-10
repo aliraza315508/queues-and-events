@@ -89,21 +89,21 @@ const filteredItems = items.filter((payment) => {
                      style: 'currency',
                      currency: 'USD',
                    }),
-                 icon: <SummaryIcon type="available" />,
+                 icon: <SummaryIcon type="payment-card" />,
                },
                {
                  label: 'Completed',
                  value: items.filter(
                    (payment) => payment.status === 'COMPLETED'
                  ).length,
-                 icon: <SummaryIcon type="reserved" />,
+                 icon: <SummaryIcon type="payment-completed" />,
                },
                {
                  label: 'Failed',
                  value: items.filter(
                    (payment) => payment.status === 'FAILED'
                  ).length,
-                 icon: <SummaryIcon type="warning" />,
+                 icon: <SummaryIcon type="payment-failed" />,
                },
              ]}
        columns={[

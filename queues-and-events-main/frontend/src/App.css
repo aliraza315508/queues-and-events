@@ -28,6 +28,67 @@
 
   /* Vertical and horizontal page spacing. */
   padding: var(--space-xl) var(--space-2xl);
+
+  min-height: 100dvh;
+background-color: var(--color-background);
+background-image:
+  linear-gradient(
+    to bottom right,
+    color-mix(in srgb, var(--color-sidebar) 22%, var(--color-background)) 0%,
+    transparent 65%
+  ),
+  url('./assets/whole-background.png');
+background-position: center, right bottom;
+background-size: 100% 100%, cover;
+background-repeat: no-repeat;
+}
+
+:is(.summary-card-icon, .service-summary-icon, .quick-links-grid)
+  svg > [pathLength="1"] {
+  stroke-dasharray: 1 1;
+  animation: draw-card-icon 4s linear infinite both;
+}
+
+@keyframes draw-card-icon {
+  0% {
+    stroke-dashoffset: 1;
+  }
+
+  50%, 75% {
+    stroke-dashoffset: 0;
+  }
+
+  100% {
+    stroke-dashoffset: 1;
+  }
+}
+
+:is(.summary-card-icon, .service-summary-icon, .quick-links-grid)
+  svg > [pathLength="1"] {
+  stroke-dasharray: 1 1;
+  animation: draw-card-icon 4s linear infinite both;
+}
+
+@keyframes draw-card-icon {
+  0% {
+    stroke-dashoffset: 1;
+  }
+
+  50%, 75% {
+    stroke-dashoffset: 0;
+  }
+
+  100% {
+    stroke-dashoffset: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(.summary-card-icon, .service-summary-icon, .quick-links-grid)
+    svg > :is(path, circle, rect) {
+    animation: none;
+    stroke-dasharray: none;
+  }
 }
 
 
@@ -114,16 +175,39 @@
 .overview-body {
   margin-top: var(--space-lg);
   padding: var(--space-lg);
-  padding-bottom: clamp(80px, 11vw, 160px);
+  padding-bottom: var(--space-2xl);
   border-radius: var(--radius-card);
 
-  background-color: var(--color-background);
-  background-image: url('./assets/background.png');
-  background-position: right bottom;
-  background-size: 100% auto;
-  background-repeat: no-repeat;
+
 }
 
 .overview-body > .summary-grid {
   margin-top: 0;
+}
+
+@media (min-width: 1201px) {
+  .overview-body :is(.dashboard-row, .dashboard-column) {
+    gap: var(--space-md);
+  }
+
+  .overview-body :is(.orders-panel, .low-stock-panel, .order-overview,
+    .quick-links-panel, .notification-summary) h2 {
+    margin-bottom: var(--space-sm);
+  }
+
+  .overview-body .stock-product-image {
+    flex-basis: 36px;
+    width: 36px;
+    height: 36px;
+  }
+
+  .overview-body .quick-links-grid a,
+  .overview-body .notification-stat {
+    min-height: 60px;
+  }
+
+  .overview-body .order-status-list {
+    grid-template-rows: repeat(7, minmax(20px, 1fr));
+    gap: var(--space-xs);
+  }
 }

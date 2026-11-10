@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { getCustomers } from '../api/customerApi'
 import CustomerCard from '../components/CustomerCard'
 import './css/CustomersPage.css'
+import DashboardHeader from '../components/Dashboard/DashboardHeader/DashboardHeader'
 
 export default function CustomersPage() {
   // Customer data and request status
@@ -65,10 +66,11 @@ export default function CustomersPage() {
       className="customer-page"
       aria-labelledby="customer-heading"
     >
-      <header className="page-banner">
-        <h1 id="customer-heading">Customers</h1>
-        <p>Manage customer accounts and view related activity.</p>
-      </header>
+   <DashboardHeader
+     title="Customers"
+     description="Manage customer accounts and view related activity."
+     headingId="customer-heading"
+   />
 
       {/* Search */}
       <label className="customer-search">

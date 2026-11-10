@@ -5,13 +5,12 @@ const navigation = [
   {
     label: 'Overview',
     href: '#overview',
-    icon: (
-      <path
-        d="m12 3 10 8h-3v10h-5v-7h-4v7H5V11H2Z"
-        fill="currentColor"
-        stroke="none"
-      />
-    ),
+   icon: (
+     <>
+       <path d="M3 10 12 3l9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+       <path d="M9 21v-8h6v8" />
+     </>
+   ),
   },
   {
     label: 'Customers',

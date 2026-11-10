@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import './ServicePage.css'
 import './PageBanner.css'
+import DashboardHeader from '../Dashboard/DashboardHeader/DashboardHeader'
 
 export default function ServicePage({
   title,
@@ -38,10 +39,8 @@ export default function ServicePage({
   return (
     <section className={`service-page ${title.toLowerCase()}-page`}>
       {/* 1. Page heading */}
-    <header className="service-page-header page-banner">
-      <h1>{title}</h1>
-      <p>{description}</p>
-    </header>
+    <DashboardHeader title={title} description={description} />
+
 
       {/* 2. Optional summary cards */}
       {summaries.length > 0 && (

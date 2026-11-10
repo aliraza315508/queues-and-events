@@ -9,8 +9,8 @@
   justify-content: space-between;
   gap: var(--space-xl);
 
-  min-height: 200px;
-  padding: var(--space-2xl);
+min-height: 112px;
+padding: var(--space-md) var(--space-lg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
 
@@ -25,6 +25,15 @@
   background-position: center, right bottom;
   background-size: 100% 100%, auto 100%;
   background-repeat: no-repeat;
+
+margin-bottom: var(--space-lg);
+}
+.dashboard-header h1 {
+  margin: 0;
+}
+
+.dashboard-header p {
+  margin: var(--space-xs) 0 0;
 }
 
 /* Stack account information above the refresh button. */
