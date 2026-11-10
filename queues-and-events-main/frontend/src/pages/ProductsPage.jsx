@@ -48,7 +48,7 @@ export default function ProductsPage() {
 
   return (
     <section className="product-page" aria-labelledby="product-heading">
-      <header className="product-page-header">
+      <header className="product-page-header page-banner">
         <h1 id="product-heading">Products</h1>
         <p>Browse and manage products available for sale in your store.</p>
       </header>

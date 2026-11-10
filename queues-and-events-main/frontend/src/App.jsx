@@ -36,6 +36,7 @@ export default function App() {
         {activePage === 'overview' && (
           <>
             <DashboardHeader />
+            <div className="overview-body">
             <SummaryGrid />
 
             <div className="dashboard-row">

@@ -9,7 +9,13 @@
 
   padding: var(--space-3xl) var(--space-sm);
 background-color: var(--color-sidebar-end);
-background-image: url('../../../assets/sidebar-background.png');
+background-image:
+   linear-gradient(
+     to bottom,
+     color-mix(in srgb, var(--color-sidebar) 80%, transparent) 75%,
+     color-mix(in srgb, var(--color-sidebar) 55%, transparent)
+   ),
+ url('../../../assets/sidebar-background.png');
 background-position: center top;
 background-repeat: no-repeat;
 background-size: cover;

@@ -65,7 +65,10 @@ export default function CustomersPage() {
       className="customer-page"
       aria-labelledby="customer-heading"
     >
-      <h2 id="customer-heading">Customers</h2>
+      <header className="page-banner">
+        <h1 id="customer-heading">Customers</h1>
+        <p>Manage customer accounts and view related activity.</p>
+      </header>
 
       {/* Search */}
       <label className="customer-search">

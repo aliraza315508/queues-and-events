@@ -109,3 +109,21 @@
     padding: var(--space-lg);
   }
 }
+
+
+.overview-body {
+  margin-top: var(--space-lg);
+  padding: var(--space-lg);
+  padding-bottom: clamp(80px, 11vw, 160px);
+  border-radius: var(--radius-card);
+
+  background-color: var(--color-background);
+  background-image: url('./assets/background.png');
+  background-position: right bottom;
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+}
+
+.overview-body > .summary-grid {
+  margin-top: 0;
+}
