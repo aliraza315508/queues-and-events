@@ -1,15 +1,18 @@
+
 import { useEffect, useState } from 'react'
 import { getProducts } from '../api/productApi'
 import ProductCard from '../components/ProductCard'
-import './css/ProductsPage.css'
 import DashboardHeader from '../components/Dashboard/DashboardHeader/DashboardHeader'
+import './css/ProductsPage.css'
 
 export default function ProductsPage() {
   const [items, setItems] = useState([])
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
-  const [selectedProduct, setSelectedProduct] = useState(null)
+
+  // Only one product card can be expanded at a time.
+  const [expandedProductId, setExpandedProductId] = useState(null)
 
   useEffect(() => {
     const controller = new AbortController()
@@ -37,7 +40,7 @@ export default function ProductsPage() {
     return () => controller.abort()
   }, [])
 
-  // Match products by name or SKU.
+  // Filter products by name or SKU.
   const searchText = search.trim().toLowerCase()
 
   const filteredProducts = items.filter((product) => {
@@ -47,13 +50,23 @@ export default function ProductsPage() {
     return name.includes(searchText) || sku.includes(searchText)
   })
 
+  // Clicking the same card again collapses it.
+  function toggleProduct(productId) {
+    setExpandedProductId((currentId) =>
+      currentId === productId ? null : productId
+    )
+  }
+
   return (
-    <section className="product-page" aria-labelledby="product-heading">
- <DashboardHeader
-   title="Products"
-   description="Browse and manage products available for sale in your store."
-   headingId="product-heading"
- />
+    <section
+      className="product-page"
+      aria-labelledby="product-heading"
+    >
+      <DashboardHeader
+        title="Products"
+        description="Browse and manage products available for sale in your store."
+        headingId="product-heading"
+      />
 
       <div className="product-search">
         <svg
@@ -78,6 +91,7 @@ export default function ProductsPage() {
       </div>
 
       {loading && <p role="status">Loading products...</p>}
+
       {error && <p role="alert">{error}</p>}
 
       {!loading && !error && (
@@ -90,100 +104,16 @@ export default function ProductsPage() {
         ) : (
           <div className="product-grid">
             {filteredProducts.map((product) => (
-           <ProductCard
-             key={product.id}
-             product={product}
-             onViewDetails={setSelectedProduct}
-           />
+              <ProductCard
+                key={product.id}
+                product={product}
+                expanded={expandedProductId === product.id}
+                onToggle={() => toggleProduct(product.id)}
+              />
             ))}
           </div>
         )
       )}
-  {selectedProduct && (
-    <div
-      className="product-panel-backdrop"
-      onClick={() => setSelectedProduct(null)}
-    >
-      <aside
-        className="product-details-panel"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="product-details-heading"
-        onClick={(event) => event.stopPropagation()}
-        onKeyDown={(event) => {
-          if (event.key === 'Escape') {
-            setSelectedProduct(null)
-          }
-        }}
-      >
-        <header className="product-panel-header">
-          <h2 id="product-details-heading">Product details</h2>
-
-          <button
-            type="button"
-            className="product-panel-close"
-            aria-label="Close product details"
-            autoFocus
-            onClick={() => setSelectedProduct(null)}
-          >
-            ×
-          </button>
-        </header>
-
-        <h3>{selectedProduct.name ?? 'Unnamed product'}</h3>
-
-        <dl className="product-details-list">
-          <div>
-            <dt>ID</dt>
-            <dd>{selectedProduct.id ?? 'Not provided'}</dd>
-          </div>
-
-          <div>
-            <dt>SKU</dt>
-            <dd>{selectedProduct.sku ?? 'Not provided'}</dd>
-          </div>
-
-          <div>
-            <dt>Description</dt>
-            <dd>{selectedProduct.description ?? 'Not provided'}</dd>
-          </div>
-
-          <div>
-            <dt>Price</dt>
-            <dd>
-              {selectedProduct.price == null
-                ? 'Not provided'
-                : new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'USD',
-                  }).format(selectedProduct.price)}
-            </dd>
-          </div>
-
-          <div>
-            <dt>Active</dt>
-            <dd>
-              {selectedProduct.active == null
-                ? 'Not provided'
-                : selectedProduct.active
-                  ? 'Yes'
-                  : 'No'}
-            </dd>
-          </div>
-
-          <div>
-            <dt>Created at</dt>
-            <dd>{selectedProduct.createdAt ?? 'Not provided'}</dd>
-          </div>
-
-          <div>
-            <dt>Updated at</dt>
-            <dd>{selectedProduct.updatedAt ?? 'Not provided'}</dd>
-          </div>
-        </dl>
-      </aside>
-    </div>
-  )}
     </section>
   )
 }

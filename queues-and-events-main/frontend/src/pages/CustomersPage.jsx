@@ -1,8 +1,10 @@
+
 import { useEffect, useState } from 'react'
 import { getCustomers } from '../api/customerApi'
-import CustomerCard from '../components/CustomerCard'
-import './css/CustomersPage.css'
+import CustomerCard from '../components/CustomerComponents/CustomerCard'
+import CustomerActivity from '../components/CustomerComponents/CustomerActivity'
 import DashboardHeader from '../components/Dashboard/DashboardHeader/DashboardHeader'
+import './css/CustomersPage.css'
 
 export default function CustomersPage() {
   // Customer data and request status
@@ -13,7 +15,6 @@ export default function CustomersPage() {
   // Search and account details
   const [search, setSearch] = useState('')
   const [selectedAccount, setSelectedAccount] = useState(null)
-  const [accountTab, setAccountTab] = useState('orders')
 
   // Load customers
   useEffect(() => {
@@ -52,12 +53,9 @@ export default function CustomersPage() {
     return name.includes(searchTerm) || email.includes(searchTerm)
   })
 
-  const accountTabLabel =
-    accountTab.charAt(0).toUpperCase() + accountTab.slice(1)
-
+  // Select customer to view account details
   function handleViewAccount(customer) {
     setSelectedAccount(customer)
-    setAccountTab('orders')
   }
 
   return (
@@ -66,11 +64,11 @@ export default function CustomersPage() {
       className="customer-page"
       aria-labelledby="customer-heading"
     >
-   <DashboardHeader
-     title="Customers"
-     description="Manage customer accounts and view related activity."
-     headingId="customer-heading"
-   />
+      <DashboardHeader
+        title="Customers"
+        description="Manage customer accounts and view related activity."
+        headingId="customer-heading"
+      />
 
       {/* Search */}
       <label className="customer-search">
@@ -120,7 +118,9 @@ export default function CustomersPage() {
           >
             {/* Panel header */}
             <div className="account-panel-header">
-              <h2 id="account-panel-title">Account details</h2>
+              <h2 id="account-panel-title">
+                Account details
+              </h2>
 
               <button
                 className="account-close-button"
@@ -154,67 +154,11 @@ export default function CustomersPage() {
               </div>
             </dl>
 
-            {/* Record navigation */}
-            <nav
-              className="account-tabs"
-              aria-label="Customer records"
-            >
-              {['orders', 'payments', 'notifications'].map((tab) => (
-                <button
-                  key={tab}
-                  type="button"
-                  className={accountTab === tab ? 'active' : ''}
-                  aria-pressed={accountTab === tab}
-                  onClick={() => setAccountTab(tab)}
-                >
-                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                </button>
-              ))}
-            </nav>
-
-            {/* Record preview */}
-            <div className="account-tab-content">
-              <svg
-                className="account-tab-icon"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                {accountTab === 'orders' ? (
-                  <>
-                    <path d="M3 3h2l3 12h10l3-9H6" />
-                    <circle cx="9" cy="20" r="1" />
-                    <circle cx="18" cy="20" r="1" />
-                  </>
-                ) : accountTab === 'payments' ? (
-                  <>
-                    <rect
-                      x="3"
-                      y="5"
-                      width="18"
-                      height="14"
-                      rx="2"
-                    />
-                    <path d="M3 9h18M7 14h4" />
-                  </>
-                ) : (
-                  <>
-                    <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" />
-                    <path d="M10 21h4" />
-                  </>
-                )}
-              </svg>
-
-              <h3>{accountTabLabel} (proposed)</h3>
-
-              <p>
-                View this customer’s {accountTab} in a future release.
-              </p>
-            </div>
+            {/* Customer-specific records fetched from backend */}
+            <CustomerActivity
+              key={selectedAccount.id}
+              customerId={selectedAccount.id}
+            />
           </aside>
         )}
       </div>

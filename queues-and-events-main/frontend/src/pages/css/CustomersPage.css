@@ -447,3 +447,65 @@
   font-size: 12px;
   line-height: 1.5;
 }
+
+
+
+/* Customer activity list */
+.customer-activity .account-tab-content {
+  display: block;
+  min-height: 120px;
+  text-align: left;
+}
+
+.account-record-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.account-record {
+  min-width: 0;
+  padding: var(--space-md);
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-small);
+}
+
+.account-record-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.account-record-header strong {
+  color: var(--color-heading);
+  overflow-wrap: anywhere;
+}
+
+.account-panel .account-record-details {
+  margin: var(--space-sm) 0 0;
+}
+
+.account-panel .account-record-details > div {
+  display: grid;
+  grid-template-columns: 85px minmax(0, 1fr);
+  gap: var(--space-sm);
+  padding: var(--space-xs) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.account-record-details dd {
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+@media (max-width: 480px) {
+  .account-panel .account-record-details > div {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

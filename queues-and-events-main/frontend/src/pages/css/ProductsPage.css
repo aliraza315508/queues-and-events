@@ -62,6 +62,7 @@
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
+  align-items: start;
 }
 
 .product-card {
@@ -300,5 +301,46 @@
 
   .product-details-list > div:hover {
     transform: none;
+  }
+}
+
+
+/* Expanded product stays inside its original card. */
+.product-card-expanded {
+  margin-top: var(--space-md);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-border);
+  animation: product-details-open 0.2s ease-out;
+}
+
+/* Highlight the currently expanded card. */
+.product-card-expanded-active {
+  border-color: var(--color-heading);
+  box-shadow: var(--shadow-card);
+}
+
+/* Keep the detail entries compact inside the card. */
+.product-card-expanded .product-details-list > div {
+  margin-bottom: var(--space-sm);
+  padding: var(--space-md);
+  border-radius: var(--radius-small);
+}
+
+/* Smooth appearance when opening details. */
+@keyframes product-details-open {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-card-expanded {
+    animation: none;
   }
 }
