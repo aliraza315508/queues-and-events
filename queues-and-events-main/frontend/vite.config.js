@@ -11,6 +11,7 @@ export default defineConfig({
       "/inventory": "http://localhost:8084",
       "/payments": "http://localhost:8085",
       "/api/notifications": "http://localhost:8086",
+      '/api/events': 'http://localhost:8081',
     },
   },
 });

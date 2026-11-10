@@ -20,7 +20,7 @@ export default function DashboardHeader({
       {showOverviewActions && (<div className="dashboard-header-actions">
         <div className="dashboard-account">
           {/* Dashboard values are currently hardcoded samples. */}
-          <span className="sample-data-label">Sample data</span>
+
 
           {/* Static admin display; this does not open a menu. */}
           <div className="admin-profile">

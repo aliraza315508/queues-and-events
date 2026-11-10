@@ -131,7 +131,7 @@ background-repeat: no-repeat;
 /* Fill unused column space so the bottom panels align. */
 .dashboard-column > .order-overview,
 .dashboard-column > .notification-summary {
-  flex: 1;
+  flex: 0 0 auto;
 }
 
 

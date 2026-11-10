@@ -1,15 +1,32 @@
-/* Panel appearance */
+/* ========================================
+   1. EVENT OVERVIEW PANEL
+   ======================================== */
+
 .order-overview {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+
   min-width: 0;
+  min-height: 0;
+  height: auto;
+  gap: 0;
+
   padding: var(--space-md) var(--space-lg);
   background: var(--color-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
 }
 
-/* Match the other dashboard headings. */
+/* Prevent the panel from stretching vertically */
+.overview-body .dashboard-column > .order-overview {
+  flex: 0 0 auto;
+}
+
+/* Main heading */
 .order-overview h2 {
-  margin: 0 0 var(--space-xl);
+  margin: 0 0 8px;
   color: var(--color-heading);
   font-family: var(--font-heading);
   font-size: var(--text-section);
@@ -17,25 +34,72 @@
   line-height: 1.2;
 }
 
-/* Space between status rows. */
-.order-status-list {
-  flex: 1;
-  display: grid;
-  grid-template-rows: repeat(7, minmax(28px, 1fr));
-  align-items: center;
-  gap: var(--space-sm);
-  padding-bottom: var(--space-xs);
+
+/* ========================================
+   2. EVENT GROUPS
+   ======================================== */
+
+.event-overview-group {
+  display: block;
+  flex: 0 0 auto;
+
+  min-height: 0;
+  height: auto;
+  margin: 0;
+  padding: 0;
 }
 
-/* Label, bar, and count columns. */
+/* Space between Orders, Payments, Inventory,
+   and Notifications */
+.event-overview-group + .event-overview-group {
+  margin-top: 48px;
+}
+
+/* Group headings */
+.event-overview-group h3 {
+  margin: 0 0 4px;
+  color: var(--color-heading);
+  font-family: var(--font-body);
+  font-size: var(--text-small);
+  font-weight: 700;
+}
+
+
+/* ========================================
+   3. EVENT GRAPH ROWS
+   ======================================== */
+
+/* Override App.css seven-row grid rule */
+.overview-body .order-overview .order-status-list {
+  display: grid;
+
+  grid-template-rows: none;
+  grid-auto-rows: minmax(20px, auto);
+
+  align-content: start;
+  gap: 3px;
+
+  height: auto;
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+}
+
+/* Individual event row */
 .order-status-row {
   display: grid;
-  grid-template-columns: 155px minmax(0, 1fr) 24px;
+  grid-template-columns: 155px minmax(0, 1fr) 40px;
   align-items: center;
   gap: var(--space-md);
+
+  min-height: 20px;
+  height: auto;
+
+  margin: 0;
+  padding: 0;
 }
 
-/* Bold status labels. */
+/* Event labels */
 .order-status-label {
   color: var(--color-text);
   font-family: var(--font-body);
@@ -44,53 +108,71 @@
   overflow-wrap: anywhere;
 }
 
-/* Background track behind each bar. */
+
+/* ========================================
+   4. GRAPH TRACK AND BAR
+   ======================================== */
+
 .order-status-track {
   height: 14px;
   overflow: hidden;
+
   background: var(--color-order-track);
   border-radius: var(--space-xs);
 }
 
-/* Shared bar shape. */
+/* Same green color for all events */
 .order-status-fill {
   height: 100%;
-  border-radius: inherit;
-}
-
-/* Status-specific colors from theme.css. */
-.order-status-fill--created {
-  background: var(--color-order-created);
-}
-
-.order-status-fill--reserved {
-  background: var(--color-order-reserved);
-}
-
-.order-status-fill--default {
-  background: var(--color-order-default);
-}
-
-.order-status-fill--payment {
-  background: var(--color-order-payment);
-}
-
-.order-status-fill--confirmed {
   background: var(--color-order-confirmed);
+  border-radius: inherit;
+  transition: width 0.4s ease;
 }
 
-/* Right-aligned counts. */
+
+/* ========================================
+   5. EVENT COUNTS
+   ======================================== */
+
 .order-status-count {
   color: var(--color-text);
   font-family: var(--font-body);
   font-size: var(--text-small);
+  font-weight: 600;
   text-align: right;
 }
 
-/* Move the bar below its label on small screens. */
+
+/* ========================================
+   6. EVENT INFORMATION
+   ======================================== */
+
+.event-overview-note {
+  margin: 8px 0 0;
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  font-size: var(--text-small);
+}
+
+.event-overview-error {
+  color: var(--color-danger-text);
+  font-family: var(--font-body);
+  font-size: var(--text-small);
+}
+
+
+/* ========================================
+   7. RESPONSIVE DESIGN
+   ======================================== */
+
 @media (max-width: 600px) {
+
+  .event-overview-group + .event-overview-group {
+    margin-top: 24px;
+  }
+
   .order-status-row {
-    grid-template-columns: minmax(0, 1fr) 24px;
+    grid-template-columns: minmax(0, 1fr) 40px;
   }
 
   .order-status-track {
