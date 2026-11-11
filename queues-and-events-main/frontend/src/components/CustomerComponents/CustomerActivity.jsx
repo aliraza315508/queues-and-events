@@ -1,5 +1,6 @@
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useQueries } from '@tanstack/react-query'
 
 import { getOrdersByCustomerId } from '../../api/orderApi'
 import { getPaymentsByCustomerId } from '../../api/paymentApi'
@@ -10,19 +11,7 @@ import StatusBadge from '../ReueseableServiceTemplate/StatusBadge'
 // Available account tabs.
 const tabs = ['orders', 'payments', 'notifications']
 
-const emptyRecords = () => ({
-  orders: [],
-  payments: [],
-  notifications: [],
-})
-
-const emptyErrors = () => ({
-  orders: '',
-  payments: '',
-  notifications: '',
-})
-
-// Format monetary values.
+// Format amounts as USD.
 function formatAmount(value) {
   if (value == null) return 'Not provided'
 
@@ -32,7 +21,7 @@ function formatAmount(value) {
   })
 }
 
-// Format timestamps from the backend.
+// Format timestamps.
 function formatDate(value) {
   if (!value) return 'Not provided'
 
@@ -43,7 +32,7 @@ function formatDate(value) {
     : date.toLocaleString()
 }
 
-// Render a single customer record.
+// Display one customer record.
 function AccountRecord({ type, record }) {
   let title = ''
   let fields = []
@@ -105,104 +94,94 @@ function AccountRecord({ type, record }) {
 }
 
 export default function CustomerActivity({ customerId }) {
+  // Only the selected tab needs local state.
   const [accountTab, setAccountTab] = useState('orders')
 
-  const [records, setRecords] = useState(emptyRecords)
-  const [errors, setErrors] = useState(emptyErrors)
-  const [loading, setLoading] = useState(true)
+  // TanStack Query handles all API request states.
+  const [ordersQuery, paymentsQuery, notificationsQuery] = useQueries({
+    queries: [
+      {
+        queryKey: ['customer', customerId, 'orders'],
+        queryFn: ({ signal }) =>
+          getOrdersByCustomerId(customerId, signal),
+        enabled: Boolean(customerId),
+      },
+      {
+        queryKey: ['customer', customerId, 'payments'],
+        queryFn: ({ signal }) =>
+          getPaymentsByCustomerId(customerId, signal),
+        enabled: Boolean(customerId),
+      },
+      {
+        queryKey: ['customer', customerId, 'notifications'],
+        queryFn: ({ signal }) =>
+          getNotificationsByCustomerId(customerId, signal),
+        enabled: Boolean(customerId),
+      },
+    ],
+  })
 
-  // Load records whenever the selected customer changes.
-  useEffect(() => {
-    const controller = new AbortController()
+  // Associate each tab with its query.
+  const queries = {
+    orders: ordersQuery,
+    payments: paymentsQuery,
+    notifications: notificationsQuery,
+  }
 
-    setLoading(true)
-    setRecords(emptyRecords())
-    setErrors(emptyErrors())
+  const currentQuery = queries[accountTab]
 
-    async function loadCustomerActivity() {
-      // Fetch all three collections concurrently.
-      const results = await Promise.allSettled([
-        getOrdersByCustomerId(customerId, controller.signal),
-        getPaymentsByCustomerId(customerId, controller.signal),
-        getNotificationsByCustomerId(customerId, controller.signal),
-      ])
-
-      // Ignore outdated responses.
-      if (controller.signal.aborted) return
-
-      const nextRecords = emptyRecords()
-      const nextErrors = emptyErrors()
-
-      results.forEach((result, index) => {
-        const type = tabs[index]
-
-        if (
-          result.status === 'fulfilled' &&
-          Array.isArray(result.value)
-        ) {
-          nextRecords[type] = [...result.value].sort(
-            (a, b) =>
-              new Date(b.createdAt || 0) -
-              new Date(a.createdAt || 0)
-          )
-        } else {
-          nextErrors[type] =
-            result.status === 'rejected'
-              ? result.reason?.message || `Could not load ${type}.`
-              : `Invalid response from ${type} service.`
-        }
-      })
-
-      setRecords(nextRecords)
-      setErrors(nextErrors)
-      setLoading(false)
-    }
-
-    loadCustomerActivity()
-
-    // Cancel requests if the component unmounts
-    // or a different customer is selected.
-    return () => controller.abort()
-  }, [customerId])
-
-  const currentRecords = records[accountTab]
-  const currentError = errors[accountTab]
+  // Copy and sort records without changing cached data.
+  const currentRecords = Array.isArray(currentQuery.data)
+    ? [...currentQuery.data].sort(
+        (a, b) =>
+          new Date(b.createdAt || 0) -
+          new Date(a.createdAt || 0)
+      )
+    : []
 
   return (
     <section className="customer-activity">
-      {/* Orders, Payments, Notifications tabs */}
+
+      {/* Customer account tabs */}
       <nav
         className="account-tabs"
         aria-label="Customer records"
       >
-        {tabs.map((tab) => (
-          <button
-            key={tab}
-            type="button"
-            className={accountTab === tab ? 'active' : ''}
-            aria-pressed={accountTab === tab}
-            onClick={() => setAccountTab(tab)}
-          >
-            {tab.charAt(0).toUpperCase() + tab.slice(1)}
+        {tabs.map((tab) => {
+          const query = queries[tab]
 
-            {!loading &&
-              !errors[tab] &&
-              ` (${records[tab].length})`}
-          </button>
-        ))}
+          return (
+            <button
+              key={tab}
+              type="button"
+              className={accountTab === tab ? 'active' : ''}
+              aria-pressed={accountTab === tab}
+              onClick={() => setAccountTab(tab)}
+            >
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+
+              {query.isSuccess &&
+                Array.isArray(query.data) &&
+                ` (${query.data.length})`}
+            </button>
+          )
+        })}
       </nav>
 
-      {/* Display selected tab's records */}
+      {/* Display selected tab records */}
       <div
         className="account-tab-content"
         aria-live="polite"
       >
-        {loading ? (
+        {currentQuery.isPending ? (
           <p role="status">
             Loading customer {accountTab}...
           </p>
-        ) : currentError ? (
-          <p role="alert">{currentError}</p>
+        ) : currentQuery.isError && !currentQuery.data ? (
+          <p role="alert">
+            {currentQuery.error?.message ||
+              `Could not load customer ${accountTab}.`}
+          </p>
         ) : currentRecords.length === 0 ? (
           <p>No {accountTab} found for this customer.</p>
         ) : (
