@@ -16,3 +16,9 @@ USER app
 EXPOSE ${SERVER_PORT}
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
+
+
+
+
+
+
