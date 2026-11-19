@@ -1,3 +1,4 @@
+
 services:
   order-postgres:
     image: postgres:17-alpine
@@ -107,6 +108,25 @@ services:
       retries: 5
     restart: unless-stopped
 
+  # Dedicated PostgreSQL database for RAG.
+  ai-postgres:
+    image: pgvector/pgvector:0.8.7-pg17-trixie
+    container_name: ai-postgres
+    environment:
+      POSTGRES_DB: ai_db
+      POSTGRES_USER: ai_user
+      POSTGRES_PASSWORD: ai_password
+    ports:
+      - "127.0.0.1:5438:5432"
+    volumes:
+      - ai-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ai_user -d ai_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
   kafka:
     image: apache/kafka:4.1.2
     container_name: ecommerce-kafka
@@ -133,5 +153,6 @@ volumes:
   inventory-postgres-data:
   payment-postgres-data:
   notification-postgres-data:
+  ai-postgres-data:
   kafka-data:
   rabbitmq-data:
